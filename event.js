@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         HowWTSucks
+// @name         HowWTSucks - Event
 // @namespace    https://reimu.worktile.com/
 // @version      0.1
 // @description  try to take over the world!
@@ -21,7 +21,7 @@
               time_h = null;
 
               var d_taskNum = $('.card-sidebar .task-num .num');
-              d_taskNum.replaceWith('<a href="#">' + d_taskNum.text() + '</a>');
+              d_taskNum.replaceWith('<a target="_blank" href="https://help.worktile.com/task/' + d_taskNum.text() + '">' + d_taskNum.text() + '</a>');
 
               // TODO__1: Give the num text an event to open new window with specific URL
           }
