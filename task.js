@@ -6,6 +6,7 @@
 // @author       Cyancat
 // @match        https://help.worktile.com/task/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
+// @reqiure
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -13,58 +14,69 @@
 // TODO__2: Get task detail with api https://reimu.worktile.com/api/tasks/no/2210 , then fill the page
 // TODO__2: Get all actions of task ready to work
 
-
 (function() {
-    'use strict';
+  'use strict';
 
-    unsafeWindow.document.documentElement.innerHTML = '<h1>Loading data...</h1>';
+  function ctCSS(){
+    return '<style> \
+      .container { \
+        margin-left: 20px; \
+      } \
+      .ws-title-meta { \
+        font-size: 14px; \
+        margin-left: 10px; \
+      } \
+    </style>';
+  };
 
-    // Include UIKit
-    $("head").append (
-    '<link '
-      + 'href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.25/css/uikit.min.css" '
-      + 'rel="stylesheet" type="text/css">'
-    ).append (
-    '<script '
-      + 'src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"'
-      + '></script>'
-    ).append (
-    '<script '
-      + 'src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.25/js/uikit.min.js"'
-      + '></script>'
-    ).append (
-    '<script '
-      + 'src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.25/js/uikit-icons.min.js"'
-      + '></script>'
-    );
+  function ctHTML(){
+    return ' <div class="pure-g container"> \
+      <div class="ws-title-container pure-u-1"> \
+        <h1><span class="ws-title-meta"></span></h1> \
+      </div> \
+      <div class="ws-content-container pure-u-1"> \
+        <pre></pre> \
+      </div> \
+    </div>';
+  };
 
-    GM_xmlhttpRequest({
-      method: "GET",
-      url: "https://reimu.worktile.com/api/tasks/no/" + /.*\/task\/(\d*)/g.exec(window.location.href)[1],
-      onload: function(res) {
+  unsafeWindow.document.documentElement.innerHTML = '<h1>Loading data...</h1>';
 
-        // Remove original page
-        unsafeWindow.document.documentElement.innerHTML = '';
+  // Include UIKit
+  $("head").append(
+  '<link '
+    + 'href="//unpkg.com/purecss@1.0.0/build/pure-min.css" '
+    + 'rel="stylesheet" type="text/css">'
+  );
 
-        // Get task data
-        var taskData = JSON.parse(res.responseText);
+  GM_xmlhttpRequest({
+    method: "GET",
+    url: "https://reimu.worktile.com/api/tasks/no/" + /.*\/task\/(\d*)/g.exec(window.location.href)[1],
+    onload: function(res) {
 
-        // Page title
-        $("head").append (
-        '<title>'
-          + '#' + taskData.data.identifier + ' - ' + taskData.data.title
-          + '</title>'
-        );
+      // Remove original page
+      $('body').html('');
 
-        // Construct new HTML
-        var newHTML = $("<div uk-grid></div>", {
-          "clsss": "container"
-          "style": ""
-        });
-        newHTML.append("<div>").append($("<h1>", { text: taskData.data.title }));
+      // Get task data
+      var taskData = JSON.parse(res.responseText);
 
-        newHTML.appendTo('body');
+      // Page title
+      $("head").append (
+      '<title>'
+        + '#' + taskData.data.identifier + ' - ' + taskData.data.title
+        + '</title>'
+      );
 
-      }
-    });
+      // Construct grid
+      var newHTML = $(ctHTML());
+      newHTML.find('.ws-title-container h1').html(taskData.data.title);
+      newHTML.find('.ws-title-container h1').append($("<span>", {
+        class: "ws-title-meta",
+        text: "#" + taskData.data.identifier
+      }));
+
+      $('body').html(ctCSS());
+      newHTML.appendTo('body');
+    }
+  });
 })();
