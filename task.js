@@ -3,7 +3,7 @@
 // @namespace    https://reimu.worktile.com/
 // @version      0.1
 // @description  try to take over the world!
-// @author       Cyan
+// @author       Cyancat
 // @match        https://help.worktile.com/task/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @grant        GM_xmlhttpRequest
