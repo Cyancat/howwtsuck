@@ -4,8 +4,9 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       Cyancat
-// @match        https://help.worktile.com/task/*
+// @match        https://help.worktile.com/taskno/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
 // @reqiure
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
@@ -51,7 +52,7 @@
 
   GM_xmlhttpRequest({
     method: "GET",
-    url: "https://reimu.worktile.com/api/tasks/no/" + /.*\/task\/(\d*)/g.exec(window.location.href)[1],
+    url: "https://reimu.worktile.com/api/tasks/no/" + /.*\/taskno\/(\d*)/g.exec(window.location.href)[1],
     onload: function(res) {
 
       // Remove original page
@@ -75,7 +76,13 @@
         text: "#" + taskData.data.identifier
       }));
 
+      var tcr = new commonmark.Parser();
+      var tc = new commonmark.HtmlRenderer();
+      newHTML.find('.ws-content-container').html(tc.render(tcr.parse(taskData.data.description)).replace(/\n[^\<]/gi, "<br>"));
       $('body').html(ctCSS());
+      // TODO: Current markdown lack for strikethrough support
+
+
       newHTML.appendTo('body');
     }
   });
