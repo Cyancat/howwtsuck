@@ -5,6 +5,7 @@
 // @description  try to take over the world!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
+// @match        https://help.worktile.com/taskcode/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js
@@ -87,7 +88,11 @@
             .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>');
   }
 
-  unsafeWindow.document.documentElement.innerHTML = '<h1>Loading data...</h1>';
+  function popNotice(t) {
+    unsafeWindow.document.documentElement.innerHTML = '<h1>' + t + '</h1>';
+  }
+
+  popNotice('Loading data...');
 
   // Include UIKit
   $("head").append(
@@ -96,9 +101,22 @@
     + 'rel="stylesheet" type="text/css">'
   );
 
+  var task_no = /.*\/taskno\/(\d*)/g.exec(window.location.href),
+      task_code = /.*\/taskcode\/(.*)/g.exec(window.location.href);
+
+  task_no = task_no != null ? task_no[1] : '';
+  task_code = task_code != null ? task_code[1] : '';
+
+  if (task_no == '' && task_code == '') {
+    popNotice('Something goes wrong! Check the url pppplz</h1>(\\&nbsp;&nbsp;/)<br>( ¬᎑¬)<br>/つ🍫');
+    return;
+  }
+
+  var api_url = task_no != '' ? ("https://reimu.worktile.com/api/tasks/no/" + task_no) : ("https://reimu.worktile.com/api/tasks/" + task_code);
+
   GM_xmlhttpRequest({
     method: "GET",
-    url: "https://reimu.worktile.com/api/tasks/no/" + /.*\/taskno\/(\d*)/g.exec(window.location.href)[1],
+    url: api_url,
     onload: function(res) {
 
       // Remove original page
@@ -106,6 +124,11 @@
 
       // Get task data
       var taskData = JSON.parse(res.responseText);
+
+      if (taskData.code == "404") {
+        popNotice('Task not exist or no authority! (・へ・)');
+        return;
+      }
 
       // Page title
       $("head").append (
@@ -124,7 +147,7 @@
 
       var tcr = new commonmark.Parser();
       var tc = new commonmark.HtmlRenderer();
-      newHTML.find('.ws-content-container').html(contentFormat(tc.render(tcr.parse(taskData.data.description)).replace(/\n[^\<]/gi, "<br>")));
+      newHTML.find('.ws-content-container').html(contentFormat(tc.render(tcr.parse(taskData.data.description)).replace(/\n([^\<])/gi, "<br>$1")));
       // TODO: Current markdown lack for strikethrough support
 
       var comms = newHTML.find('.ws-comments-container');
