@@ -29,6 +29,11 @@
       img { \
         width: 100%; \
       } \
+      blockquote { \
+        background-color: #f1f1f1; \
+        margin-left: 0; \
+        padding: 1px 10px; \
+      } \
       .secondary-text { \
         color: #999; \
         font-size: 12px; \
@@ -54,6 +59,9 @@
       } \
       .ws-comment-content { \
         margin-top: 5px; \
+      } \
+      .ws-comment-content p { \
+        margin: 5px 0; \
       } \
       .ws-content-user { \
         color: #91D6D5; \
@@ -85,7 +93,8 @@
 
   function contentFormat(c) {
     return c.replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>')
-            .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>');
+            .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>')
+            .replace(/((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '<a target="_blank" href="$1">$1</a>');
   }
 
   function popNotice(t) {
@@ -94,13 +103,16 @@
 
   popNotice('Loading data...');
 
-  // Include UIKit
+
+  // Include PureCSS
   $("head").append(
   '<link '
     + 'href="//unpkg.com/purecss@1.0.0/build/pure-min.css" '
     + 'rel="stylesheet" type="text/css">'
   );
 
+
+  // Get task identifier
   var task_no = /.*\/taskno\/(\d*)/g.exec(window.location.href),
       task_code = /.*\/taskcode\/(.*)/g.exec(window.location.href);
 
@@ -110,6 +122,16 @@
   if (task_no == '' && task_code == '') {
     popNotice('Something goes wrong! Check the url pppplz</h1>(\\&nbsp;&nbsp;/)<br>( ¬᎑¬)<br>/つ🍫');
     return;
+  }
+
+
+  // Init markdown parser
+  var tcr = new commonmark.Parser();
+  var tc = new commonmark.HtmlRenderer();
+
+  function mdParser(c) {
+    // Markdown parse combined with worktile custom link.
+    return contentFormat(tc.render(tcr.parse(c)).replace(/\n([^\<])/gi, "<br>$1"));
   }
 
   var api_url = task_no != '' ? ("https://reimu.worktile.com/api/tasks/no/" + task_no) : ("https://reimu.worktile.com/api/tasks/" + task_code);
@@ -145,10 +167,11 @@
         text: "#" + taskData.data.identifier
       }));
 
-      var tcr = new commonmark.Parser();
-      var tc = new commonmark.HtmlRenderer();
-      newHTML.find('.ws-content-container').html(contentFormat(tc.render(tcr.parse(taskData.data.description)).replace(/\n([^\<])/gi, "<br>$1")));
-      // TODO: Current markdown lack for strikethrough support
+      newHTML.find('.ws-content-container').html(mdParser(taskData.data.description));
+      // TODO: Current markdown lack:
+      // strikethrough
+      // table
+      // number list miss-change original number to sequence
 
       var comms = newHTML.find('.ws-comments-container');
       taskData.data.comments.forEach(function(e){
@@ -163,7 +186,7 @@
           text: moment(e.updated_at*1000).format('MM-DD hh:mm')
         })).append( $("<div>", {
           class: "ws-comment-content",
-          html: contentFormat(e.content)
+          html: mdParser(e.content)
         }));
         comms.append(comm);
       });
