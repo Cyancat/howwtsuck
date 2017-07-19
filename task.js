@@ -2,20 +2,17 @@
 // @name         HowWTSucks - Task
 // @namespace    https://reimu.worktile.com/
 // @version      0.1
-// @description  try to take over the world!
+// @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
 // @match        https://help.worktile.com/taskcode/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js
-// @reqiure
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-// TODO__2: Set a rule to capture the specific URL, replce all element on page with the custumized task detail
-// TODO__2: Get task detail with api https://reimu.worktile.com/api/tasks/no/2210 , then fill the page
-// TODO__2: Get all actions of task ready to work
+// TODO: Get all actions of task ready to work
 
 (function() {
   'use strict';
@@ -92,9 +89,9 @@
   };
 
   function contentFormat(c) {
-    return c.replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>')
-            .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>')
-            .replace(/((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '<a target="_blank" href="$1">$1</a>');
+    return c.replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>') // @
+            .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
+            .replace(/((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '<a target="_blank" href="$1">$1</a>'); // URL format ( for markdown lack)
   }
 
   function popNotice(t) {
@@ -167,7 +164,13 @@
         text: "#" + taskData.data.identifier
       }));
 
+      // TODO: Add task meta info
+
       newHTML.find('.ws-content-container').html(mdParser(taskData.data.description));
+      // TODO: Add tags
+      // TODO: Add attachments
+      // TODO: Add subtask, also parent task
+      // TODO: Add watchers
       // TODO: Current markdown lack:
       // strikethrough
       // table
@@ -190,6 +193,7 @@
         }));
         comms.append(comm);
       });
+      // TODO: Add activities.
 
 
       $('body').html(ctCSS());
