@@ -7,6 +7,7 @@
 // @match        https://help.worktile.com/taskno/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js
 // @reqiure
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
@@ -20,12 +21,47 @@
 
   function ctCSS(){
     return '<style> \
+      * {\
+        color: #333; \
+        box-sizing: border-box; \
+      } \
+      img { \
+        width: 100%; \
+      } \
+      .secondary-text { \
+        color: #999; \
+        font-size: 12px; \
+      } \
       .container { \
         margin-left: 20px; \
+      } \
+      .container > div { \
+        padding: 20px; \
       } \
       .ws-title-meta { \
         font-size: 14px; \
         margin-left: 10px; \
+      } \
+      .ws-comments-container { \
+        border-left: 1px solid #ccc; \
+      } \
+      .ws-comment { \
+        margin-bottom: 30px; \
+      } \
+      .ws-comment-time { \
+        margin-left: 5px; \
+      } \
+      .ws-comment-content { \
+        margin-top: 5px; \
+      } \
+      .ws-content-user { \
+        color: #91D6D5; \
+      } \
+      .ws-content-tasklink { \
+        color: #F9A5A1; \
+      } \
+      .ws-content-tasklink:hover { \
+        color: #A23607 \
       } \
     </style>';
   };
@@ -35,11 +71,21 @@
       <div class="ws-title-container pure-u-1"> \
         <h1><span class="ws-title-meta"></span></h1> \
       </div> \
-      <div class="ws-content-container pure-u-1"> \
-        <pre></pre> \
+      <div class="ws-issue-container pure-u-1-2"> \
+        <div class="ws-content-container pure-u-1"> \
+          <pre></pre> \
+        </div> \
+      </div> \
+      <div class="ws-comments-container pure-u-1-2"> \
+        \
       </div> \
     </div>';
   };
+
+  function contentFormat(c) {
+    return c.replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>')
+            .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>');
+  }
 
   unsafeWindow.document.documentElement.innerHTML = '<h1>Loading data...</h1>';
 
@@ -78,11 +124,29 @@
 
       var tcr = new commonmark.Parser();
       var tc = new commonmark.HtmlRenderer();
-      newHTML.find('.ws-content-container').html(tc.render(tcr.parse(taskData.data.description)).replace(/\n[^\<]/gi, "<br>"));
-      $('body').html(ctCSS());
+      newHTML.find('.ws-content-container').html(contentFormat(tc.render(tcr.parse(taskData.data.description)).replace(/\n[^\<]/gi, "<br>")));
       // TODO: Current markdown lack for strikethrough support
 
+      var comms = newHTML.find('.ws-comments-container');
+      taskData.data.comments.forEach(function(e){
+        var comm = $("<div>", {
+          class: "ws-comment"
+        });
+        comm.append ( $("<span>", {
+          class: "ws-comment-creator",
+          text: e.created_by.display_name
+        })).append( $("<span>", {
+          class: "ws-comment-time secondary-text",
+          text: moment(e.updated_at*1000).format('MM-DD hh:mm')
+        })).append( $("<div>", {
+          class: "ws-comment-content",
+          html: contentFormat(e.content)
+        }));
+        comms.append(comm);
+      });
 
+
+      $('body').html(ctCSS());
       newHTML.appendTo('body');
     }
   });
