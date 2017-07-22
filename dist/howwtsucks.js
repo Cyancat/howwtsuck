@@ -18,7 +18,7 @@
 
   function ctCSS() {
     return '<style> \
-    *{color:#333;box-sizing:border-box}img{width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}.container{margin-left:20px}.container>div{padding:20px}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607} \
+    *{color:#333;box-sizing:border-box}img{width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}.container{margin-left:20px}.container>div{padding:20px}.ws-task-status{padding:5px 10px}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607} \
     </style>';
   }
 
@@ -26,6 +26,7 @@
     return ' \
     <div class="pure-g container"> \
   <div class="ws-title-container pure-u-1"> \
+    <span class="ws-task-status"></span> \
     <h1><span class="ws-title-meta"></span></h1> \
   </div> \
   <div class="ws-issue-container pure-u-1-2"> \
@@ -137,6 +138,18 @@
 
       // Construct grid
       var newHTML = $(ctHTML());
+
+      var task_status = newHTML.find('.ws-task-status');
+      if (taskData.data.is_deleted == 1) {
+        task_status.text('已删除').addClass('ws-task-status-deleted');
+      } else if (taskData.data.is_archived == 1) {
+        task_status.text('已归档').addClass('ws-task-status-archived');
+      } else if (taskData.data.completion.is_completed == 1) {
+        task_status.text('已完成').addClass('ws-task-status-fin');
+      } else if (taskData.data.completion.is_completed == 0) {
+        task_status.text('进行中').addClass('ws-task-status-progress');
+      }
+
       newHTML.find('.ws-title-container h1').html(taskData.data.title);
       newHTML.find('.ws-title-container h1').append($("<span>", {
         class: "ws-title-meta",

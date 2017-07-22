@@ -57,7 +57,7 @@ gulp.task('inject', function(){
 
 gulp.task('watch', function(){
   gulp.watch(
-    ['./src/**/*.js', './src/**/*.styl'],
+    ['./src/**/*.js', './src/**/*.styl', './src/**/*.html'],
     ['inject']
   );
 });

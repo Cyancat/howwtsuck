@@ -1,5 +1,5 @@
 (function() {
-  
+
     // TODO: Combine this script to task.js
     unsafeWindow.document.addEventListener('click', function(e){
         var time_h = setTimeout(function(){

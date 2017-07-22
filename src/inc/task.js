@@ -2,22 +2,6 @@
 
 (function() {
 
-  // function ctHTML(){
-  //   return ' <div class="pure-g container"> \
-  //     <div class="ws-title-container pure-u-1"> \
-  //       <h1><span class="ws-title-meta"></span></h1> \
-  //     </div> \
-  //     <div class="ws-issue-container pure-u-1-2"> \
-  //       <div class="ws-content-container pure-u-1"> \
-  //         <pre></pre> \
-  //       </div> \
-  //     </div> \
-  //     <div class="ws-comments-container pure-u-1-2"> \
-  //       \
-  //     </div> \
-  //   </div>';
-  // };
-
   function contentFormat(c) {
     return c.replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>') // @
             .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
@@ -88,6 +72,18 @@
 
       // Construct grid
       var newHTML = $(ctHTML());
+
+      var task_status = newHTML.find('.ws-task-status');
+      if (taskData.data.is_deleted == 1) {
+        task_status.text('已删除').addClass('ws-task-status-deleted');
+      } else if (taskData.data.is_archived == 1) {
+        task_status.text('已归档').addClass('ws-task-status-archived');
+      } else if (taskData.data.completion.is_completed == 1) {
+        task_status.text('已完成').addClass('ws-task-status-fin');
+      } else if (taskData.data.completion.is_completed == 0) {
+        task_status.text('进行中').addClass('ws-task-status-progress');
+      }
+
       newHTML.find('.ws-title-container h1').html(taskData.data.title);
       newHTML.find('.ws-title-container h1').append($("<span>", {
         class: "ws-title-meta",
