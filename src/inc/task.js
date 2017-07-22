@@ -1,17 +1,3 @@
-// ==UserScript==
-// @name         HowWTSucks - Task
-// @namespace    https://reimu.worktile.com/
-// @version      0.1
-// @description  HOOOOOOW WT sucks!
-// @author       Cyancat
-// @match        https://help.worktile.com/taskno/*
-// @match        https://help.worktile.com/taskcode/*
-// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js
-// @grant        GM_xmlhttpRequest
-// ==/UserScript==
-
 // TODO: Get all actions of task ready to work
 
 (function() {

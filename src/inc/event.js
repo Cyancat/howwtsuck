@@ -1,13 +1,3 @@
-// ==UserScript==
-// @name         HowWTSucks - Event
-// @namespace    https://reimu.worktile.com/
-// @version      0.1
-// @description  HOOOOOOW WT sucks!
-// @author       Cyancat
-// @match        https://reimu.worktile.com/*
-// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
-// ==/UserScript==
-
 (function() {
     'use strict';
 

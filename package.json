@@ -1,0 +1,16 @@
+{
+  "name": "howwtsucks",
+  "version": "0.1.0",
+  "author": "Cyancat",
+  "description": "A tool which makes Worktile not that suck",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cyancat/howwtsuck.git"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-inject": "^4.2.0",
+    "gulp-rename": "^1.2.2"
+  }
+}
