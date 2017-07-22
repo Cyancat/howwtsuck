@@ -16,11 +16,32 @@
 (function() {
   'use strict';
 
+  function ctCSS() {
+    return '<style> \
+    *{color:#333;box-sizing:border-box}img{width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}.container{margin-left:20px}.container>div{padding:20px}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607} \
+    </style>';
+  }
+
+  function ctHTML() {
+    return ' \
+    <div class="pure-g container"> \
+  <div class="ws-title-container pure-u-1"> \
+    <h1><span class="ws-title-meta"></span></h1> \
+  </div> \
+  <div class="ws-issue-container pure-u-1-2"> \
+    <div class="ws-content-container pure-u-1"> \
+      <pre></pre> \
+    </div> \
+  </div> \
+  <div class="ws-comments-container pure-u-1-2"></div> \
+</div> \
+ \
+    ';
+  }
+
   if (/^https:\/\/reimu\.worktile\.com/.test(window.location.href)) {
     /* include:inc/event.js */
     (function() {
-    'use strict';
-
 
     // TODO: Combine this script to task.js
     unsafeWindow.document.addEventListener('click', function(e){
@@ -40,83 +61,11 @@
 
     /* endinject */
   }
-  else if (/^https:\/\/help.worktile.com\/taskno/.test(window.location.href) || /^https:\/\/help.worktile.com\/taskcode/.text(window.location.href)) {
+  else if (/^https:\/\/help.worktile.com\/taskno/.test(window.location.href) || /^https:\/\/help.worktile.com\/taskcode/.test(window.location.href)) {
     /* include:inc/task.js */
     // TODO: Get all actions of task ready to work
 
 (function() {
-  'use strict';
-
-  function ctCSS(){
-    return '<style> \
-      * {\
-        color: #333; \
-        box-sizing: border-box; \
-      } \
-      img { \
-        width: 100%; \
-      } \
-      blockquote { \
-        background-color: #f1f1f1; \
-        margin-left: 0; \
-        padding: 1px 10px; \
-      } \
-      .secondary-text { \
-        color: #999; \
-        font-size: 12px; \
-      } \
-      .container { \
-        margin-left: 20px; \
-      } \
-      .container > div { \
-        padding: 20px; \
-      } \
-      .ws-title-meta { \
-        font-size: 14px; \
-        margin-left: 10px; \
-      } \
-      .ws-comments-container { \
-        border-left: 1px solid #ccc; \
-      } \
-      .ws-comment { \
-        margin-bottom: 30px; \
-      } \
-      .ws-comment-time { \
-        margin-left: 5px; \
-      } \
-      .ws-comment-content { \
-        margin-top: 5px; \
-      } \
-      .ws-comment-content p { \
-        margin: 5px 0; \
-      } \
-      .ws-content-user { \
-        color: #91D6D5; \
-      } \
-      .ws-content-tasklink { \
-        color: #F9A5A1; \
-      } \
-      .ws-content-tasklink:hover { \
-        color: #A23607 \
-      } \
-    </style>';
-  };
-
-  function ctHTML(){
-    return ' <div class="pure-g container"> \
-      <div class="ws-title-container pure-u-1"> \
-        <h1><span class="ws-title-meta"></span></h1> \
-      </div> \
-      <div class="ws-issue-container pure-u-1-2"> \
-        <div class="ws-content-container pure-u-1"> \
-          <pre></pre> \
-        </div> \
-      </div> \
-      <div class="ws-comments-container pure-u-1-2"> \
-        \
-      </div> \
-    </div>';
-  };
 
   function contentFormat(c) {
     return c.replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>') // @

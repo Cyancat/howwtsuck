@@ -2,7 +2,9 @@
 
 var gulp = require('gulp'),
     inject = require('gulp-inject'),
-    rename = require('gulp-rename');
+    rename = require('gulp-rename'),
+    stylus = require('gulp-stylus'),
+    cleanCSS = require('gulp-clean-css');
 
 gulp.task('inject', function(){
   return gulp.src('./src/base.js')
@@ -16,12 +18,48 @@ gulp.task('inject', function(){
               }
             })
           )
+          .pipe(
+            inject(
+              gulp.src('./src/style.styl')
+                .pipe(stylus())
+                .pipe(cleanCSS()),
+              {
+                starttag: '/* include:css */',
+                endtag: '/* endinject */',
+                relative: true,
+                removeTags: true,
+                transform: function(filepath, file) {
+                  return file.contents.toString('utf8') + ' \\';
+                }
+              }
+            )
+          )
+          .pipe(
+            inject(gulp.src('./src/inc/**/*.html'),
+              {
+                starttag: '/* include:{{path}} */',
+                endtag: '/* endinject */',
+                relative: true,
+                removeTags: true,
+                transform: function(filepath, file) {
+                  var fileline = file.contents.toString('utf8').split('\r\n');
+                  fileline.forEach(function(c, i){
+                    fileline[i] = c + ' \\';
+                  });
+                  return fileline.join('\n');
+                }
+              }
+            )
+          )
           .pipe(rename("howwtsucks.js"))
           .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('watch', function(){
-  gulp.watch('./src/**/*.js', ['inject']);
+  gulp.watch(
+    ['./src/**/*.js', './src/**/*.styl'],
+    ['inject']
+  );
 });
 
 gulp.task('default', ['inject', 'watch']);

@@ -16,11 +16,25 @@
 (function() {
   'use strict';
 
+  function ctCSS() {
+    return '<style> \
+    /* include:css */
+    /* endinject */
+    </style>';
+  }
+
+  function ctHTML() {
+    return ' \
+    /* include:inc/task.html */
+    /* endinject */
+    ';
+  }
+
   if (/^https:\/\/reimu\.worktile\.com/.test(window.location.href)) {
     /* include:inc/event.js */
     /* endinject */
   }
-  else if (/^https:\/\/help.worktile.com\/taskno/.test(window.location.href) || /^https:\/\/help.worktile.com\/taskcode/.text(window.location.href)) {
+  else if (/^https:\/\/help.worktile.com\/taskno/.test(window.location.href) || /^https:\/\/help.worktile.com\/taskcode/.test(window.location.href)) {
     /* include:inc/task.js */
     /* endinject */
   }
