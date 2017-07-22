@@ -51,7 +51,7 @@ gulp.task('inject', function(){
               }
             )
           )
-          .pipe(rename("howwtsucks.js"))
+          .pipe(rename("script.js"))
           .pipe(gulp.dest('./dist'));
 });
 

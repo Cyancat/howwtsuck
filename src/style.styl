@@ -1,3 +1,8 @@
+/*
+ * Color pattern
+ * http://paletton.com/#uid=c0t3h0W3K0k5Uw00GT+2NI99UrveNn3
+ */
+
 *
   color: #333
   box-sizing: border-box
@@ -16,11 +21,20 @@ blockquote
 
 .container
   margin-left: 20px
-  > div
-    padding: 20px
+
+.ws-task-status-container
+  padding: 0 20px
+
+.ws-title-container
+  padding: 0 20px 20px
+
+.ws-issue-container
+.ws-comments-container
+  padding: 20px
 
 .ws-task-status
   padding: 5px 10px
+  float: left
   &.ws-task-status-progress
     background-color: #FFD889
   &.ws-task-status-fin
@@ -30,6 +44,17 @@ blockquote
   &.ws-task-status-deleted
     background-color: #DB9797
     color: #fff
+
+.ws-task-project
+  float: left
+  padding: 5px 10px
+  background-color: #B3C4C3
+
+.ws-task-meta
+  float: left
+  margin-right: 20px
+  label
+    font-weight: bold
 
 .ws-title-meta
   font-size: 14px

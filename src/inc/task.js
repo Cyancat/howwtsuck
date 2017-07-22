@@ -2,10 +2,28 @@
 
 (function() {
 
+  // TODO: Remove mac mark! See task #1615
+
   function contentFormat(c) {
+    // TODO: inline file support
     return c.replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>') // @
             .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
             .replace(/((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '<a target="_blank" href="$1">$1</a>'); // URL format ( for markdown lack)
+  }
+
+  function dueTimeFormat(d, t) {
+    var ft = t != 0 ? 'MM-DD HH:mm' : 'MM-DD';
+    return moment(d*1000).format(ft);
+  }
+
+  function priorityFormat(p) {
+    switch(p) {
+      case 0: return '未设定'; break;
+      case 1: return '低'; break;
+      case 2: return '中'; break;
+      case 3: return '高'; break;
+      default: return '啥玩意？？';
+    }
   }
 
   function popNotice(t) {
@@ -73,6 +91,18 @@
       // Construct grid
       var newHTML = $(ctHTML());
 
+      newHTML.find('.ws-title-container h1').html(taskData.data.title);
+      newHTML.find('.ws-title-container h1').append($("<span>", {
+        class: "ws-title-meta",
+        text: "#" + taskData.data.identifier
+      }));
+
+      // Task project
+      newHTML.find('.ws-task-project').text(
+        taskData.data.project.name + ' : ' + taskData.data.entry_name
+      );
+
+      // Task status
       var task_status = newHTML.find('.ws-task-status');
       if (taskData.data.is_deleted == 1) {
         task_status.text('已删除').addClass('ws-task-status-deleted');
@@ -84,14 +114,50 @@
         task_status.text('进行中').addClass('ws-task-status-progress');
       }
 
-      newHTML.find('.ws-title-container h1').html(taskData.data.title);
-      newHTML.find('.ws-title-container h1').append($("<span>", {
-        class: "ws-title-meta",
-        text: "#" + taskData.data.identifier
-      }));
+      // Task assignment
+      if (taskData.data.assignment) {
+        newHTML.find('.ws-task-assign')
+          .append($('<label>', { text: '指派给: ' }))
+          .append($('<span>', {
+             class: 'ws-content-user',
+             text: '@' + taskData.data.assignment.assignee.display_name
+           }));
+      } else {
+        newHTML.find('.ws-task-assign')
+          .append($('<label>', { text: '指派给: ' }))
+          .append($('<span>', { text: '未设定' }));
+      }
 
-      // TODO: Add task meta info
+      // Task start date
+      if (taskData.data.begin_date) {
+        newHTML.find('.ws-task-begin-date')
+          .append($('<label>', { text: '开始时间: ' }))
+          .append($('<span>', {
+             class: 'ws-content-begin-date',
+             text: dueTimeFormat(taskData.data.begin_date.date, taskData.data.begin_date.with_time)
+          }));
+      };
 
+      // Task due date
+      var due_date = '';
+      if (taskData.data.due_date) {
+        due_date = dueTimeFormat(taskData.data.due_date.date, taskData.data.due_date.with_time);
+      } else {
+        due_date = '未设定';
+      }
+      newHTML.find('.ws-task-due-date')
+        .append($('<label>', { text: '截止时间: ' }))
+        .append($('<span>', {
+           class: 'ws-content-due-date',
+           text: due_date
+         }));
+
+      // Task priority
+      newHTML.find('.ws-task-priority')
+        .append($('<label>', { text: '优先级: ' }))
+        .append(priorityFormat(taskData.data.priority));
+
+      // Task description
       newHTML.find('.ws-content-container').html(
         taskData.data.description ?
           mdParser(taskData.data.description) : "没有绵羊 ( ⊙_⊙)"

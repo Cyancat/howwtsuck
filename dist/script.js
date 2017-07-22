@@ -18,16 +18,23 @@
 
   function ctCSS() {
     return '<style> \
-    *{color:#333;box-sizing:border-box}img{width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}.container{margin-left:20px}.container>div{padding:20px}.ws-task-status{padding:5px 10px}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607} \
+    *{color:#333;box-sizing:border-box}img{width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607} \
     </style>';
   }
 
   function ctHTML() {
     return ' \
     <div class="pure-g container"> \
-  <div class="ws-title-container pure-u-1"> \
+  <div class="ws-task-status-container pure-u-1"> \
     <span class="ws-task-status"></span> \
+    <span class="ws-task-project"></span> \
+  </div> \
+  <div class="ws-title-container pure-u-1"> \
     <h1><span class="ws-title-meta"></span></h1> \
+    <span class="ws-task-meta ws-task-assign"></span> \
+    <span class="ws-task-meta ws-task-begin-date"></span> \
+    <span class="ws-task-meta ws-task-due-date"></span> \
+    <span class="ws-task-meta ws-task-priority"></span> \
   </div> \
   <div class="ws-issue-container pure-u-1-2"> \
     <div class="ws-content-container pure-u-1"> \
@@ -68,10 +75,28 @@
 
 (function() {
 
+  // TODO: Remove mac mark! See task #1615
+
   function contentFormat(c) {
+    // TODO: inline file support
     return c.replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>') // @
             .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
             .replace(/((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '<a target="_blank" href="$1">$1</a>'); // URL format ( for markdown lack)
+  }
+
+  function dueTimeFormat(d, t) {
+    var ft = t != 0 ? 'MM-DD HH:mm' : 'MM-DD';
+    return moment(d*1000).format(ft);
+  }
+
+  function priorityFormat(p) {
+    switch(p) {
+      case 0: return '未设定'; break;
+      case 1: return '低'; break;
+      case 2: return '中'; break;
+      case 3: return '高'; break;
+      default: return '啥玩意？？';
+    }
   }
 
   function popNotice(t) {
@@ -139,6 +164,18 @@
       // Construct grid
       var newHTML = $(ctHTML());
 
+      newHTML.find('.ws-title-container h1').html(taskData.data.title);
+      newHTML.find('.ws-title-container h1').append($("<span>", {
+        class: "ws-title-meta",
+        text: "#" + taskData.data.identifier
+      }));
+
+      // Task project
+      newHTML.find('.ws-task-project').text(
+        taskData.data.project.name + ' : ' + taskData.data.entry_name
+      );
+
+      // Task status
       var task_status = newHTML.find('.ws-task-status');
       if (taskData.data.is_deleted == 1) {
         task_status.text('已删除').addClass('ws-task-status-deleted');
@@ -150,14 +187,50 @@
         task_status.text('进行中').addClass('ws-task-status-progress');
       }
 
-      newHTML.find('.ws-title-container h1').html(taskData.data.title);
-      newHTML.find('.ws-title-container h1').append($("<span>", {
-        class: "ws-title-meta",
-        text: "#" + taskData.data.identifier
-      }));
+      // Task assignment
+      if (taskData.data.assignment) {
+        newHTML.find('.ws-task-assign')
+          .append($('<label>', { text: '指派给: ' }))
+          .append($('<span>', {
+             class: 'ws-content-user',
+             text: '@' + taskData.data.assignment.assignee.display_name
+           }));
+      } else {
+        newHTML.find('.ws-task-assign')
+          .append($('<label>', { text: '指派给: ' }))
+          .append($('<span>', { text: '未设定' }));
+      }
 
-      // TODO: Add task meta info
+      // Task start date
+      if (taskData.data.begin_date) {
+        newHTML.find('.ws-task-begin-date')
+          .append($('<label>', { text: '开始时间: ' }))
+          .append($('<span>', {
+             class: 'ws-content-begin-date',
+             text: dueTimeFormat(taskData.data.begin_date.date, taskData.data.begin_date.with_time)
+          }));
+      };
 
+      // Task due date
+      var due_date = '';
+      if (taskData.data.due_date) {
+        due_date = dueTimeFormat(taskData.data.due_date.date, taskData.data.due_date.with_time);
+      } else {
+        due_date = '未设定';
+      }
+      newHTML.find('.ws-task-due-date')
+        .append($('<label>', { text: '截止时间: ' }))
+        .append($('<span>', {
+           class: 'ws-content-due-date',
+           text: due_date
+         }));
+
+      // Task priority
+      newHTML.find('.ws-task-priority')
+        .append($('<label>', { text: '优先级: ' }))
+        .append(priorityFormat(taskData.data.priority));
+
+      // Task description
       newHTML.find('.ws-content-container').html(
         taskData.data.description ?
           mdParser(taskData.data.description) : "没有绵羊 ( ⊙_⊙)"
