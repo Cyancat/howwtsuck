@@ -166,7 +166,10 @@
 
       // TODO: Add task meta info
 
-      newHTML.find('.ws-content-container').html(mdParser(taskData.data.description));
+      newHTML.find('.ws-content-container').html(
+        taskData.data.description ?
+          mdParser(taskData.data.description) : "没有绵羊 ( ⊙_⊙)"
+      );
       // TODO: Add tags
       // TODO: Add attachments
       // TODO: Add subtask, also parent task
@@ -186,7 +189,7 @@
           text: e.created_by.display_name
         })).append( $("<span>", {
           class: "ws-comment-time secondary-text",
-          text: moment(e.updated_at*1000).format('MM-DD hh:mm')
+          text: moment(e.updated_at*1000).format('MM-DD HH:mm')
         })).append( $("<div>", {
           class: "ws-comment-content",
           html: mdParser(e.content)
