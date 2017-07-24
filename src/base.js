@@ -30,6 +30,11 @@
     ';
   }
 
+  var CONST = {
+    URL_TASKNO_PREFIX: 'https://help.worktile.com/taskno/',
+    URL_TASKCODE_PREFIX: 'https://help.worktile.com/taskcode/'
+  };
+
   if (/^https:\/\/reimu\.worktile\.com/.test(window.location.href)) {
     /* include:inc/event.js */
     /* endinject */

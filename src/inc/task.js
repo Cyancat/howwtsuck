@@ -91,19 +91,15 @@
       // Construct grid
       var newHTML = $(ctHTML());
 
+      // Task title
       newHTML.find('.ws-title-container h1').html(taskData.data.title);
       newHTML.find('.ws-title-container h1').append($("<span>", {
         class: "ws-title-meta",
         text: "#" + taskData.data.identifier
       }));
 
-      // Task project
-      newHTML.find('.ws-task-project').text(
-        taskData.data.project.name + ' : ' + taskData.data.entry_name
-      );
-
       // Task status
-      var task_status = newHTML.find('.ws-task-status');
+      var task_status = newHTML.find('.ws-task-stage');
       if (taskData.data.is_deleted == 1) {
         task_status.text('已删除').addClass('ws-task-status-deleted');
       } else if (taskData.data.is_archived == 1) {
@@ -112,6 +108,16 @@
         task_status.text('已完成').addClass('ws-task-status-fin');
       } else if (taskData.data.completion.is_completed == 0) {
         task_status.text('进行中').addClass('ws-task-status-progress');
+      }
+
+      // Task project
+      newHTML.find('.ws-task-project').text(
+        taskData.data.project.name + ' : ' + taskData.data.entry_name
+      );
+
+      // Task visibility
+      if (taskData.data.visibility) {
+        newHTML.find('.ws-task-visibility').text('私密').addClass('ws-task-status-deleted');
       }
 
       // Task assignment
@@ -162,9 +168,41 @@
         taskData.data.description ?
           mdParser(taskData.data.description) : "没有绵羊 ( ⊙_⊙)"
       );
+
+      // Task subtasks
+      if (taskData.data.children.length > 0) {
+        var subtask_container = newHTML.find('.ws-subtask-container').removeClass('hidden').find('ul');
+        var sorted_subtasks = taskData.data.children.sort(function(a, b){
+          return a.position - b.position;
+        });
+        sorted_subtasks.forEach(function(t) {
+          subtask_container.append(function(){
+            var subtask_li = $('<li>', {
+              class: 'pure-menu-item'
+            });
+            return subtask_li.append($('<a>', {
+              class: 'pure-menu-link',
+              text: t.title,
+              href: CONST.URL_TASKCODE_PREFIX + t._id
+            }));
+          });
+        });
+      }
+
+      // Task parent
+      if (taskData.data.parent) {
+        newHTML.find('.ws-task-parent').removeClass('hidden')
+        .append($('<label>', {
+          text: '父任务: '
+        }))
+        .append($('<a>', {
+          text: taskData.data.parent.title,
+          href: CONST.URL_TASKCODE_PREFIX + taskData.data.parent._id
+        }));
+      }
+
       // TODO: Add tags
       // TODO: Add attachments
-      // TODO: Add subtask, also parent task
       // TODO: Add watchers
       // TODO: Current markdown lack:
       // strikethrough

@@ -18,7 +18,7 @@
 
   function ctCSS() {
     return '<style> \
-    *{color:#333;box-sizing:border-box}img{width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607} \
+    *{color:#333;box-sizing:border-box}img{width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
     </style>';
   }
 
@@ -26,8 +26,10 @@
     return ' \
     <div class="pure-g container"> \
   <div class="ws-task-status-container pure-u-1"> \
-    <span class="ws-task-status"></span> \
+    <span class="ws-task-status ws-task-parent hidden"></span> \
+    <span class="ws-task-stage ws-task-status"></span> \
     <span class="ws-task-project"></span> \
+    <span class="ws-task-visibility ws-task-status"></span> \
   </div> \
   <div class="ws-title-container pure-u-1"> \
     <h1><span class="ws-title-meta"></span></h1> \
@@ -40,12 +42,21 @@
     <div class="ws-content-container pure-u-1"> \
       <pre></pre> \
     </div> \
+    <div class="ws-subtask-container hidden"> \
+      <h2>子任务</h2> \
+      <ul class="pure-menu-list"></ul> \
+    </div> \
   </div> \
   <div class="ws-comments-container pure-u-1-2"></div> \
 </div> \
  \
     ';
   }
+
+  var CONST = {
+    URL_TASKNO_PREFIX: 'https://help.worktile.com/taskno/',
+    URL_TASKCODE_PREFIX: 'https://help.worktile.com/taskcode/'
+  };
 
   if (/^https:\/\/reimu\.worktile\.com/.test(window.location.href)) {
     /* include:inc/event.js */
@@ -164,19 +175,15 @@
       // Construct grid
       var newHTML = $(ctHTML());
 
+      // Task title
       newHTML.find('.ws-title-container h1').html(taskData.data.title);
       newHTML.find('.ws-title-container h1').append($("<span>", {
         class: "ws-title-meta",
         text: "#" + taskData.data.identifier
       }));
 
-      // Task project
-      newHTML.find('.ws-task-project').text(
-        taskData.data.project.name + ' : ' + taskData.data.entry_name
-      );
-
       // Task status
-      var task_status = newHTML.find('.ws-task-status');
+      var task_status = newHTML.find('.ws-task-stage');
       if (taskData.data.is_deleted == 1) {
         task_status.text('已删除').addClass('ws-task-status-deleted');
       } else if (taskData.data.is_archived == 1) {
@@ -185,6 +192,16 @@
         task_status.text('已完成').addClass('ws-task-status-fin');
       } else if (taskData.data.completion.is_completed == 0) {
         task_status.text('进行中').addClass('ws-task-status-progress');
+      }
+
+      // Task project
+      newHTML.find('.ws-task-project').text(
+        taskData.data.project.name + ' : ' + taskData.data.entry_name
+      );
+
+      // Task visibility
+      if (taskData.data.visibility) {
+        newHTML.find('.ws-task-visibility').text('私密').addClass('ws-task-status-deleted');
       }
 
       // Task assignment
@@ -235,9 +252,41 @@
         taskData.data.description ?
           mdParser(taskData.data.description) : "没有绵羊 ( ⊙_⊙)"
       );
+
+      // Task subtasks
+      if (taskData.data.children.length > 0) {
+        var subtask_container = newHTML.find('.ws-subtask-container').removeClass('hidden').find('ul');
+        var sorted_subtasks = taskData.data.children.sort(function(a, b){
+          return a.position - b.position;
+        });
+        sorted_subtasks.forEach(function(t) {
+          subtask_container.append(function(){
+            var subtask_li = $('<li>', {
+              class: 'pure-menu-item'
+            });
+            return subtask_li.append($('<a>', {
+              class: 'pure-menu-link',
+              text: t.title,
+              href: CONST.URL_TASKCODE_PREFIX + t._id
+            }));
+          });
+        });
+      }
+
+      // Task parent
+      if (taskData.data.parent) {
+        newHTML.find('.ws-task-parent').removeClass('hidden')
+        .append($('<label>', {
+          text: '父任务: '
+        }))
+        .append($('<a>', {
+          text: taskData.data.parent.title,
+          href: CONST.URL_TASKCODE_PREFIX + taskData.data.parent._id
+        }));
+      }
+
       // TODO: Add tags
       // TODO: Add attachments
-      // TODO: Add subtask, also parent task
       // TODO: Add watchers
       // TODO: Current markdown lack:
       // strikethrough

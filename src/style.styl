@@ -19,6 +19,12 @@ blockquote
   color: #999
   font-size: 12px
 
+code
+  color: #c7254e
+  background: rgba(0,0,0,.04)
+  font-family: Consolas,"Liberation Mono",Menlo,Courier,monospace
+  padding: 0 .2em
+
 .container
   margin-left: 20px
 
@@ -44,6 +50,9 @@ blockquote
   &.ws-task-status-deleted
     background-color: #DB9797
     color: #fff
+  &.ws-task-parent
+    float: right
+    background-color: #E6E9EB
 
 .ws-task-project
   float: left
@@ -81,3 +90,7 @@ blockquote
   color: #F9A5A1
   &:hover
     color: #A23607
+
+
+.ws-subtask-container
+  margin-top: 50px;
