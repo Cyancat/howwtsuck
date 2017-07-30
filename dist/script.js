@@ -1,25 +1,27 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.2.0
+// @version      0.3.0
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
 // @match        https://help.worktile.com/taskcode/*
+// @match        https://help.worktile.com/drive_image/*
 // @match        https://reimu.worktile.com/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js
 // @grant        GM_xmlhttpRequest
+// @grant        GM_addStyle
 // ==/UserScript==
 
 (function() {
   'use strict';
 
   function ctCSS() {
-    return '<style> \
-    *{color:#333;box-sizing:border-box}img{width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
-    </style>';
+    GM_addStyle(' \
+    *{color:#333;box-sizing:border-box}img{width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-comment-attachment{display:flex}.ws-comment-attachment label{color:#999}.ws-comment-attachment .ws-comment-attachment-container{margin-left:10px}.ws-comment-attachment .ws-comment-attachment-container ul{margin:0;padding:0;list-style:none}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
+    ');
   }
 
   function ctHTML() {
@@ -55,8 +57,48 @@
 
   var CONST = {
     URL_TASKNO_PREFIX: 'https://help.worktile.com/taskno/',
-    URL_TASKCODE_PREFIX: 'https://help.worktile.com/taskcode/'
+    URL_TASKCODE_PREFIX: 'https://help.worktile.com/taskcode/',
+    TEAM_ID: '5837fe300d084d66c710fd0e'
   };
+
+  /* include:inc/common.js */
+  var util = {
+  builder: {}
+};
+
+util.cleanHTML = function() {
+  unsafeWindow.document.documentElement.innerHTML = '';
+  util.globalNotice('Loading data...');
+  ctCSS();
+};
+
+util.globalNotice = function(t) {
+  $('body').html('<h1>' + t + '</h1>');
+};
+
+util.builder.attachments = function(data) {
+  var html = $("<ul>", {
+    class: "ws-attachment"
+  });
+
+  data.forEach(function(at){
+    var at_a = $("<a>").appendTo( $("<li>").appendTo(html) );
+
+    if (at.addition.thumbnail == "") {
+      at_a.prop("href", "https://reimu.worktile.com/files/" + at._id + "/preview?from=attachment&version=" + at.addition.current_version)
+          .prop("text", at.title)
+          .prop("target", "_blank");
+    } else {
+      at_a.prop("href", "https://help.worktile.com/drive_image/" + at._id + "/" + at.ref_id + "/" + at.addition.current_version)
+          .prop("text", at.title)
+          .prop("target", "_blank");
+    }
+  });
+
+  return html;
+};
+
+  /* endinject */
 
   if (/^https:\/\/reimu\.worktile\.com/.test(window.location.href)) {
     /* include:inc/event.js */
@@ -81,6 +123,7 @@
     /* endinject */
   }
   else if (/^https:\/\/help.worktile.com\/taskno/.test(window.location.href) || /^https:\/\/help.worktile.com\/taskcode/.test(window.location.href)) {
+    util.cleanHTML();
     /* include:inc/task.js */
     // TODO: Get all actions of task ready to work
 
@@ -109,13 +152,6 @@
       default: return '啥玩意？？';
     }
   }
-
-  function popNotice(t) {
-    unsafeWindow.document.documentElement.innerHTML = '<h1>' + t + '</h1>';
-  }
-
-  popNotice('Loading data...');
-
 
   // Include PureCSS
   $("head").append(
@@ -298,7 +334,9 @@
         var comm = $("<div>", {
           class: "ws-comment"
         });
-        comm.append ( $("<span>", {
+
+        // Comment main content
+        comm.append( $("<span>", {
           class: "ws-comment-creator",
           text: e.created_by.display_name
         })).append( $("<span>", {
@@ -308,16 +346,62 @@
           class: "ws-comment-content",
           html: mdParser(e.content)
         }));
+
+        // Comment attachments
+        if (e.attachments.length > 0) {
+          $("<div>", {
+            class: "ws-comment-attachment"
+          }).appendTo(comm)
+            .append( $("<label>", {
+              class: "ws-comment-attachment-label",
+              text: "附件:"
+            }))
+            .append( $("<div>", {
+              class: "ws-comment-attachment-container"
+            }));
+
+          comm.find('.ws-comment-attachment-container').append(util.builder.attachments(e.attachments));
+        };
+
         comms.append(comm);
       });
       // TODO: Add activities.
 
-
-      $('body').html(ctCSS());
+      
       newHTML.appendTo('body');
     }
   });
 })();
+
+    /* endinject */
+  }
+  else if (/^https:\/\/help.worktile.com\/drive_image/.test(window.location.href)) {
+    util.cleanHTML();
+    /* include:inc/drive_image.js */
+    var params = /^https:\/\/help.worktile.com\/drive_image\/(.*)\/(.*)\/(\d*)/.exec(window.location.href),
+    _id = params[1],
+    ref_id = params[2],
+    current_version = params[3];
+
+$("<a>", {
+  href: "javascript:;"
+}).append( $("<img>", {
+  src: "https://wt-box.worktile.com/drives/" + _id + "/from-s3?team_id=" + CONST.TEAM_ID + "&version=" + current_version + "&ref_id=" + ref_id,
+  class: "fit_to_width"
+}))
+.click(function(){
+  var img = $(this).find('img');
+  if (img.prop('class') == 'fit_to_width') {
+    img.prop('class', 'fit_to_origin')
+  }
+  else if (img.prop('class') == 'fit_to_origin') {
+    img.prop('class', 'fit_to_height')
+  }
+  else {
+    img.prop('class', 'fit_to_width')
+  }
+})
+.appendTo( $('body').html('') );
 
     /* endinject */
   }

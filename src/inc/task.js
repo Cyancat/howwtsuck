@@ -26,13 +26,6 @@
     }
   }
 
-  function popNotice(t) {
-    unsafeWindow.document.documentElement.innerHTML = '<h1>' + t + '</h1>';
-  }
-
-  popNotice('Loading data...');
-
-
   // Include PureCSS
   $("head").append(
   '<link '
@@ -214,7 +207,9 @@
         var comm = $("<div>", {
           class: "ws-comment"
         });
-        comm.append ( $("<span>", {
+
+        // Comment main content
+        comm.append( $("<span>", {
           class: "ws-comment-creator",
           text: e.created_by.display_name
         })).append( $("<span>", {
@@ -224,12 +219,28 @@
           class: "ws-comment-content",
           html: mdParser(e.content)
         }));
+
+        // Comment attachments
+        if (e.attachments.length > 0) {
+          $("<div>", {
+            class: "ws-comment-attachment"
+          }).appendTo(comm)
+            .append( $("<label>", {
+              class: "ws-comment-attachment-label",
+              text: "附件:"
+            }))
+            .append( $("<div>", {
+              class: "ws-comment-attachment-container"
+            }));
+
+          comm.find('.ws-comment-attachment-container').append(util.builder.attachments(e.attachments));
+        };
+
         comms.append(comm);
       });
       // TODO: Add activities.
 
-
-      $('body').html(ctCSS());
+      
       newHTML.appendTo('body');
     }
   });
