@@ -42,7 +42,8 @@ gulp.task('inject', function(){
                 relative: true,
                 removeTags: true,
                 transform: function(filepath, file) {
-                  var fileline = file.contents.toString('utf8').split('\r\n');
+                  // If for windows, the split mark should be '\r\n'
+                  var fileline = file.contents.toString('utf8').split('\n');
                   fileline.forEach(function(c, i){
                     fileline[i] = c + ' \\';
                   });

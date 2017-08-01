@@ -12,13 +12,13 @@ $("<a>", {
 .click(function(){
   var img = $(this).find('img');
   if (img.prop('class') == 'fit_to_width') {
-    img.prop('class', 'fit_to_origin')
+    img.prop('class', 'fit_to_origin');
   }
   else if (img.prop('class') == 'fit_to_origin') {
-    img.prop('class', 'fit_to_height')
+    img.prop('class', 'fit_to_height');
   }
   else {
-    img.prop('class', 'fit_to_width')
+    img.prop('class', 'fit_to_width');
   }
 })
 .appendTo( $('body').html('') );
