@@ -35,7 +35,15 @@
                 }
               });
 
-              // TODO__1: Give the num text an event to open new window with specific URL
+              $('.entity-detail .desc img').replaceWith(function(){
+                return $('<a>', {
+                    href: CONST.URL_PUBLIC_IMAGE_PREFIX + /^https:\/\/wt-box\.worktile\.com\/public\/(.*)/.exec($(this).prop('src'))[1],
+                    target: "_blank"
+                    }).append($('<img>', {
+                      src: $(this).prop('src'),
+                      alt: $(this).prop('alt')
+                    }));
+              });
           }
 
           if (time_count >= 5) {

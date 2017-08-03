@@ -25,7 +25,7 @@ util.builder.attachments = function(data) {
           .prop("text", at.title)
           .prop("target", "_blank");
     } else {
-      at_a.prop("href", "https://help.worktile.com/drive_image/" + at._id + "/" + at.ref_id + "/" + at.addition.current_version)
+      at_a.prop("href", "https://help.worktile.com/image/" + at._id + "/" + at.ref_id + "/" + at.addition.current_version)
           .prop("text", at.title)
           .prop("target", "_blank");
     }

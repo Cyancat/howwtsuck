@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.3.0
+// @version      0.3.1
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
 // @match        https://help.worktile.com/taskcode/*
-// @match        https://help.worktile.com/drive_image/*
+// @match        https://help.worktile.com/image/*
+// @match        https://help.worktile.com/public_image/*
 // @match        https://reimu.worktile.com/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
@@ -58,7 +59,16 @@
   var CONST = {
     URL_TASKNO_PREFIX: 'https://help.worktile.com/taskno/',
     URL_TASKCODE_PREFIX: 'https://help.worktile.com/taskcode/',
+    URL_PUBLIC_IMAGE_PREFIX: 'https://help.worktile.com/public_image/',
     TEAM_ID: '5837fe300d084d66c710fd0e'
+  };
+
+  var RCONST = {
+    URL_WT_BASE: /^https:\/\/reimu\.worktile\.com/,
+    URL_HWT_TASKNO: /^https:\/\/help.worktile.com\/taskno/,
+    URL_HWT_TASKCODE: /^https:\/\/help.worktile.com\/taskcode/,
+    URL_HWT_IMAGE: /^https:\/\/help.worktile.com\/image/,
+    URL_HWT_PUBLIC_IMAGE: /^https:\/\/help.worktile.com\/public_image/
   };
 
   /* include:inc/common.js */
@@ -89,7 +99,7 @@ util.builder.attachments = function(data) {
           .prop("text", at.title)
           .prop("target", "_blank");
     } else {
-      at_a.prop("href", "https://help.worktile.com/drive_image/" + at._id + "/" + at.ref_id + "/" + at.addition.current_version)
+      at_a.prop("href", "https://help.worktile.com/image/" + at._id + "/" + at.ref_id + "/" + at.addition.current_version)
           .prop("text", at.title)
           .prop("target", "_blank");
     }
@@ -100,7 +110,7 @@ util.builder.attachments = function(data) {
 
   /* endinject */
 
-  if (/^https:\/\/reimu\.worktile\.com/.test(window.location.href)) {
+  if (RCONST.URL_WT_BASE.test(window.location.href)) {
     /* include:inc/event.js */
     (function() {
 
@@ -139,7 +149,15 @@ util.builder.attachments = function(data) {
                 }
               });
 
-              // TODO__1: Give the num text an event to open new window with specific URL
+              $('.entity-detail .desc img').replaceWith(function(){
+                return $('<a>', {
+                    href: CONST.URL_PUBLIC_IMAGE_PREFIX + /^https:\/\/wt-box\.worktile\.com\/public\/(.*)/.exec($(this).prop('src'))[1],
+                    target: "_blank"
+                    }).append($('<img>', {
+                      src: $(this).prop('src'),
+                      alt: $(this).prop('alt')
+                    }));
+              });
           }
 
           if (time_count >= 5) {
@@ -153,7 +171,7 @@ util.builder.attachments = function(data) {
 
     /* endinject */
   }
-  else if (/^https:\/\/help.worktile.com\/taskno/.test(window.location.href) || /^https:\/\/help.worktile.com\/taskcode/.test(window.location.href)) {
+  else if (RCONST.URL_HWT_TASKNO.test(window.location.href) || RCONST.URL_HWT_TASKCODE.test(window.location.href)) {
     util.cleanHTML();
     /* include:inc/task.js */
     // TODO: Get all actions of task ready to work
@@ -406,33 +424,52 @@ util.builder.attachments = function(data) {
 
     /* endinject */
   }
-  else if (/^https:\/\/help.worktile.com\/drive_image/.test(window.location.href)) {
+  else if (RCONST.URL_HWT_IMAGE.test(window.location.href) || RCONST.URL_HWT_PUBLIC_IMAGE.test(window.location.href)) {
     util.cleanHTML();
     /* include:inc/drive_image.js */
-    var params = /^https:\/\/help.worktile.com\/drive_image\/(.*)\/(.*)\/(\d*)/.exec(window.location.href),
-    _id = params[1],
-    ref_id = params[2],
-    current_version = params[3];
+    var params = null;
 
-$("<a>", {
-  href: "javascript:;"
-}).append( $("<img>", {
-  src: "https://wt-box.worktile.com/drives/" + _id + "/from-s3?team_id=" + CONST.TEAM_ID + "&version=" + current_version + "&ref_id=" + ref_id,
-  class: "fit_to_width"
-}))
-.click(function(){
-  var img = $(this).find('img');
-  if (img.prop('class') == 'fit_to_width') {
-    img.prop('class', 'fit_to_origin');
-  }
-  else if (img.prop('class') == 'fit_to_origin') {
-    img.prop('class', 'fit_to_height');
-  }
-  else {
-    img.prop('class', 'fit_to_width');
-  }
-})
-.appendTo( $('body').html('') );
+var make_image = function(tar) {
+
+  $("<a>", {
+    href: "javascript:;"
+    })
+    .append( $("<img>", {
+      src: tar,
+      class: "fit_to_width"
+    }))
+    .click(function(){
+      var img = $(this).find('img');
+      if (img.prop('class') == 'fit_to_width') {
+        img.prop('class', 'fit_to_origin');
+      }
+      else if (img.prop('class') == 'fit_to_origin') {
+        img.prop('class', 'fit_to_height');
+      }
+      else {
+        img.prop('class', 'fit_to_width');
+      }
+    })
+    .appendTo( $('body').html('') );
+};
+
+if (/^https:\/\/help.worktile.com\/image/.test(window.location.href)) {
+
+  params = /^https:\/\/help.worktile.com\/image\/(.*)\/(.*)\/(\d*)/.exec(window.location.href);
+  var _id = params[1],
+      ref_id = params[2],
+      current_version = params[3];
+
+  make_image("https://wt-box.worktile.com/drives/" + _id + "/from-s3?team_id=" + CONST.TEAM_ID + "&version=" + current_version + "&ref_id=" + ref_id);
+
+}
+else if (/^https:\/\/help.worktile.com\/public_image/.test(window.location.href)) {
+  params = /^https:\/\/help.worktile.com\/public_image\/(.*)/.exec(window.location.href);
+  var _id = params[1];
+
+  make_image("https://wt-box.worktile.com/public/" + _id);
+
+}
 
     /* endinject */
   }
