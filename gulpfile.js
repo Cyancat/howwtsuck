@@ -9,7 +9,7 @@ var gulp = require('gulp'),
 gulp.task('inject', function(){
   return gulp.src('./src/base.js')
           .pipe(
-            inject(gulp.src('./src/inc/**/*.js'), {
+            inject(gulp.src('./src/**/*.js'), {
               starttag: '/* include:{{path}} */',
               endtag: '/* endinject */',
               relative: true,

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.3.1
+// @version      0.4.0
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -33,20 +33,8 @@
     ';
   }
 
-  var CONST = {
-    URL_TASKNO_PREFIX: 'https://help.worktile.com/taskno/',
-    URL_TASKCODE_PREFIX: 'https://help.worktile.com/taskcode/',
-    URL_PUBLIC_IMAGE_PREFIX: 'https://help.worktile.com/public_image/',
-    TEAM_ID: '5837fe300d084d66c710fd0e'
-  };
-
-  var RCONST = {
-    URL_WT_BASE: /^https:\/\/reimu\.worktile\.com/,
-    URL_HWT_TASKNO: /^https:\/\/help.worktile.com\/taskno/,
-    URL_HWT_TASKCODE: /^https:\/\/help.worktile.com\/taskcode/,
-    URL_HWT_IMAGE: /^https:\/\/help.worktile.com\/image/,
-    URL_HWT_PUBLIC_IMAGE: /^https:\/\/help.worktile.com\/public_image/
-  };
+  /* include:config.js */
+  /* endinject */
 
   /* include:inc/common.js */
   /* endinject */
@@ -57,8 +45,29 @@
   }
   else if (RCONST.URL_HWT_TASKNO.test(window.location.href) || RCONST.URL_HWT_TASKCODE.test(window.location.href)) {
     util.cleanHTML();
-    /* include:inc/task.js */
+
+    /* include:inc/task/init.js */
     /* endinject */
+
+    function renderTask(res) {
+
+      var newHTML = $(ctHTML());
+
+      /* include:inc/task/preprocess.js */
+      /* endinject */
+
+      /* include:inc/task/head.js */
+      /* endinject */
+
+      /* include:inc/task/main.js */
+      /* endinject */
+
+      /* include:inc/task/comments.js */
+      /* endinject */
+
+      newHTML.appendTo('body');
+
+    }
   }
   else if (RCONST.URL_HWT_IMAGE.test(window.location.href) || RCONST.URL_HWT_PUBLIC_IMAGE.test(window.location.href)) {
     util.cleanHTML();
