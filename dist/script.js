@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.4.0
+// @version      0.4.1
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -256,7 +256,6 @@ $('body').html('');
 
 // Get task data
 var taskData = JSON.parse(res.responseText);
-console.log(res);
 
 if (taskData.code == "404") {
   popNotice('Task not exist or no authority! (・へ・)');
@@ -438,7 +437,7 @@ var reply_form = $('<form>', {
 
 var reply_data = {
   content: reply_form.find('textarea').text(),
-  type:2,
+  type: 2,
   id: taskData.data._id,
   attachments: []
 };
@@ -449,28 +448,27 @@ $("<fieldset>", {
     placeholder: '在此添加回复',
     change: function(){
       reply_data.content = this.value;
-      console.log(JSON.stringify(reply_data));
+    },
+    keydown: function(e){
+      if (e.ctrlKey && e.keyCode == 13) {
+        $(this).change();
+        $('.ws-comment-reply').submit();
+      }
     }
-  })).append( $('<input>', {
+  })).append( $('<button>', {
     type: 'submit',
     class: 'pure-button pure-input-1-5 pure-button-primary',
     text: '回复'
   }))
   .appendTo(reply_form);
 
-console.log(CONST.URL_API_COMMENT + '?t=' + moment(new Date()).format('x'));
-console.log(JSON.stringify(reply_data));
 reply_form.submit(function(){
   GM_xmlhttpRequest({
     method: "POST",
     url: CONST.URL_API_COMMENT + '?t=' + moment(new Date()).format('x'),
-    header: {'Content-Type': 'application/json; charset=utf-8'},
-    data: JSON.stringify(reply_data),
-    onload: function(resp) {
-      console.log(resp);
-    }
+    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+    data: JSON.stringify(reply_data)
   });
-  return false;
 });
 
 reply_form.appendTo(comms);

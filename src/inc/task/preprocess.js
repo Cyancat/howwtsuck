@@ -3,7 +3,6 @@ $('body').html('');
 
 // Get task data
 var taskData = JSON.parse(res.responseText);
-console.log(res);
 
 if (taskData.code == "404") {
   popNotice('Task not exist or no authority! (・へ・)');
