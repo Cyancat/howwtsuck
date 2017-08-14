@@ -58,8 +58,7 @@ util.commonmark.mdParser = function(c) {
           .replace(/\n([^\<])/gi, "<br>$1") // Fix a wired situation
           .replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>') // @
           .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
-          .replace(/((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '<a target="_blank" href="$1">$1</a>'); // URL format ( for markdown lack)
-          // TODO: inline file support
+          .replace(/(^|[^"'])((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '$1<a target="_blank" href="$2">$2</a>'); // URL format ( for markdown lack)
           // TODO: Remove mac mark! See task #1615
 
           // TODO: Current markdown lack:
