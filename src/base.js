@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.4.1
+// @version      0.4.3
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
 // @match        https://help.worktile.com/taskcode/*
 // @match        https://help.worktile.com/image/*
 // @match        https://help.worktile.com/public_image/*
+// @match        https://help.worktile.com/active
 // @match        https://reimu.worktile.com/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
@@ -72,6 +73,11 @@
   else if (RCONST.URL_HWT_IMAGE.test(window.location.href) || RCONST.URL_HWT_PUBLIC_IMAGE.test(window.location.href)) {
     util.cleanHTML();
     /* include:inc/drive_image.js */
+    /* endinject */
+  }
+  else if (RCONST.URL_HWT_ACTIVE.test(window.location.href)) {
+    util.cleanHTML();
+    /* include:inc/task/active.js */
     /* endinject */
   }
 

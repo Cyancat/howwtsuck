@@ -1,11 +1,49 @@
 (function() {
 
-    // TODO: Combine this script to task.js
+    var tcc = 0;
+    var tc = setInterval(function(){
+      if ( $('.nav-apps').length > 0 ) {
+        clearInterval(tc);
+
+        var navi_c = $('<li>').append(
+              $('<a>', {
+                target: '_blank',
+                href: CONST.URL_TASK_ACTIVE,
+                class: 'app-item pbox-trigger-other-apps'
+              }).append(
+                $('<span>', {
+                  class: 'item-icon'
+                }).append($('<i>',{
+                  class: 'wtf icon-default',
+                  style: 'font-size: 14px;',
+                  text: '|ω･`)ﾁﾗｯ'
+                })).append($('<i>',{
+                  class: 'wtf icon-hover',
+                  style: 'font-size: 14px;',
+                  text: '|ω･`)ﾁﾗｯ'
+                }))
+              ).append( $('<span>', {
+                class: 'name',
+                text: '动态'
+              }))
+            );
+
+          $('.nav-apps').prepend(navi_c);
+
+      }
+
+      tcc++;
+      if (tcc >= 30) {
+        clearInterval(time_h);
+      }
+    }, 300);
+
+
     unsafeWindow.document.addEventListener('click', function(e){
         var time_count = 0;
-        var time_h = setTimeout(function(){
+        var time_h = setInterval(function(){
           if( $('.entity-detail').length > 0 ) {
-              time_h = null;
+              clearInterval(time_h);
 
               // Already executed, so skip
               if ($('.wt-header-tasklink').length > 0) {
@@ -23,7 +61,7 @@
                     }).append($('<i>', {
                       class: 'lcfont lc-hr'
                     })).append(' ').append( $('<a>', {
-                      text: '#' + taskno[1],
+                      text: taskno[1],
                       target: '_blank',
                       href: CONST.URL_TASKNO_PREFIX + taskno[1]
                     }));
@@ -46,11 +84,11 @@
               });
           }
 
-          if (time_count >= 5) {
-            time_h = null;
-          }
           time_count++;
-        }, 1000);
+          if (time_count >= 8) {
+            clearInterval(time_h);
+          }
+        }, 300);
     }, false);
 
 })();

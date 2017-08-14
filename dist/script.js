@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.4.1
+// @version      0.4.3
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
 // @match        https://help.worktile.com/taskcode/*
 // @match        https://help.worktile.com/image/*
 // @match        https://help.worktile.com/public_image/*
+// @match        https://help.worktile.com/active
 // @match        https://reimu.worktile.com/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
@@ -62,6 +63,7 @@
   URL_TASKNO_PREFIX: 'https://help.worktile.com/taskno/',
   URL_TASKCODE_PREFIX: 'https://help.worktile.com/taskcode/',
   URL_PUBLIC_IMAGE_PREFIX: 'https://help.worktile.com/public_image/',
+  URL_TASK_ACTIVE: 'https://help.worktile.com/active',
   TEAM_ID: '5837fe300d084d66c710fd0e'
 };
 
@@ -72,7 +74,8 @@ var RCONST = {
   URL_HWT_TASKNO: /^https:\/\/help.worktile.com\/taskno/,
   URL_HWT_TASKCODE: /^https:\/\/help.worktile.com\/taskcode/,
   URL_HWT_IMAGE: /^https:\/\/help.worktile.com\/image/,
-  URL_HWT_PUBLIC_IMAGE: /^https:\/\/help.worktile.com\/public_image/
+  URL_HWT_PUBLIC_IMAGE: /^https:\/\/help.worktile.com\/public_image/,
+  URL_HWT_ACTIVE: /^https:\/\/help.worktile.com\/active/
 };
 
   /* endinject */
@@ -154,12 +157,50 @@ util.commonmark.mdParser = function(c) {
     /* include:inc/event.js */
     (function() {
 
-    // TODO: Combine this script to task.js
+    var tcc = 0;
+    var tc = setInterval(function(){
+      if ( $('.nav-apps').length > 0 ) {
+        clearInterval(tc);
+
+        var navi_c = $('<li>').append(
+              $('<a>', {
+                target: '_blank',
+                href: CONST.URL_TASK_ACTIVE,
+                class: 'app-item pbox-trigger-other-apps'
+              }).append(
+                $('<span>', {
+                  class: 'item-icon'
+                }).append($('<i>',{
+                  class: 'wtf icon-default',
+                  style: 'font-size: 14px;',
+                  text: '|ω･`)ﾁﾗｯ'
+                })).append($('<i>',{
+                  class: 'wtf icon-hover',
+                  style: 'font-size: 14px;',
+                  text: '|ω･`)ﾁﾗｯ'
+                }))
+              ).append( $('<span>', {
+                class: 'name',
+                text: '动态'
+              }))
+            );
+
+          $('.nav-apps').prepend(navi_c);
+
+      }
+
+      tcc++;
+      if (tcc >= 30) {
+        clearInterval(time_h);
+      }
+    }, 300);
+
+
     unsafeWindow.document.addEventListener('click', function(e){
         var time_count = 0;
-        var time_h = setTimeout(function(){
+        var time_h = setInterval(function(){
           if( $('.entity-detail').length > 0 ) {
-              time_h = null;
+              clearInterval(time_h);
 
               // Already executed, so skip
               if ($('.wt-header-tasklink').length > 0) {
@@ -177,7 +218,7 @@ util.commonmark.mdParser = function(c) {
                     }).append($('<i>', {
                       class: 'lcfont lc-hr'
                     })).append(' ').append( $('<a>', {
-                      text: '#' + taskno[1],
+                      text: taskno[1],
                       target: '_blank',
                       href: CONST.URL_TASKNO_PREFIX + taskno[1]
                     }));
@@ -200,11 +241,11 @@ util.commonmark.mdParser = function(c) {
               });
           }
 
-          if (time_count >= 5) {
-            time_h = null;
-          }
           time_count++;
-        }, 1000);
+          if (time_count >= 8) {
+            clearInterval(time_h);
+          }
+        }, 300);
     }, false);
 
 })();
@@ -524,6 +565,13 @@ else if (/^https:\/\/help.worktile.com\/public_image/.test(window.location.href)
   make_image("https://wt-box.worktile.com/public/" + _id);
 
 }
+
+    /* endinject */
+  }
+  else if (RCONST.URL_HWT_ACTIVE.test(window.location.href)) {
+    util.cleanHTML();
+    /* include:inc/task/active.js */
+    console.log('That is ACTIVE!');
 
     /* endinject */
   }
