@@ -9,7 +9,7 @@
               $('<a>', {
                 target: '_blank',
                 href: CONST.URL_TASK_ACTIVE,
-                class: 'app-item pbox-trigger-other-apps'
+                class: 'app-item'
               }).append(
                 $('<span>', {
                   class: 'item-icon'
@@ -28,7 +28,7 @@
               }))
             );
 
-          $('.nav-apps').prepend(navi_c);
+          $('.nav-apps:eq(1)').prepend(navi_c);
 
       }
 

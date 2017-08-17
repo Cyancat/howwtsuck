@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.4.3
+// @version      0.4.4
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -166,7 +166,7 @@ util.commonmark.mdParser = function(c) {
               $('<a>', {
                 target: '_blank',
                 href: CONST.URL_TASK_ACTIVE,
-                class: 'app-item pbox-trigger-other-apps'
+                class: 'app-item'
               }).append(
                 $('<span>', {
                   class: 'item-icon'
@@ -185,7 +185,7 @@ util.commonmark.mdParser = function(c) {
               }))
             );
 
-          $('.nav-apps').prepend(navi_c);
+          $('.nav-apps:eq(1)').prepend(navi_c);
 
       }
 
