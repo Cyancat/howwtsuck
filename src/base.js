@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.4.4
+// @version      0.5.0
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -77,7 +77,7 @@
   }
   else if (RCONST.URL_HWT_ACTIVE.test(window.location.href)) {
     util.cleanHTML();
-    /* include:inc/task/active.js */
+    /* include:inc/activity/main.js */
     /* endinject */
   }
 

@@ -1,4 +1,4 @@
-// Remove original page
+// Remove loading
 $('body').html('');
 
 // Get task data

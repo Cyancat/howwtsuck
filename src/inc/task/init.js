@@ -18,7 +18,7 @@ if (task_no == '' && task_code == '') {
   return;
 }
 
-var api_url = task_no != '' ? ("https://reimu.worktile.com/api/tasks/no/" + task_no) : ("https://reimu.worktile.com/api/tasks/" + task_code);
+var api_url = task_no != '' ? (CONST.URL_API_TASKNO + task_no) : (CONST.URL_API_TASKCODE + task_code);
 
 GM_xmlhttpRequest({
   method: "GET",

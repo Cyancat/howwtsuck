@@ -1,5 +1,6 @@
 var util = {
   builder: {},
+  url: {},
   commonmark: {}
 };
 
@@ -12,6 +13,10 @@ util.cleanHTML = function() {
 util.globalNotice = function(t) {
   $('body').html('<h1>' + t + '</h1>');
 };
+
+util.getUnixtime = function() {
+  return moment(new Date()).format('x');
+}
 
 util.builder.attachments = function(data) {
   var html = $("<ul>", {
@@ -49,6 +54,14 @@ util.builder.priorityFormat = function(p) {
   }
 };
 
+util.url.taskcode = function(tc) {
+  return CONST.URL_TASKCODE_PREFIX + tc;
+}
+
+util.url.read_message = function(ref_id, message_id) {
+  return CONST.URL_API_READ_MESSAGE + ref_id + '/messages/' + message_id + '/unread?t=' + util.getUnixtime();
+}
+
 util.commonmark.tcr = new commonmark.Parser();
 util.commonmark.tc = new commonmark.HtmlRenderer();
 
@@ -58,6 +71,7 @@ util.commonmark.mdParser = function(c) {
           .replace(/\n([^\<])/gi, "<br>$1") // Fix a wired situation
           .replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>') // @
           .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
+          // TODO: Continuous tasks could cause a error parse, see #3413's comment
           .replace(/(^|[^"'])((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '$1<a target="_blank" href="$2">$2</a>'); // URL format ( for markdown lack)
           // TODO: Remove mac mark! See task #1615
 

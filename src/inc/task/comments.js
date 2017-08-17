@@ -71,7 +71,7 @@ $("<fieldset>", {
 reply_form.submit(function(){
   GM_xmlhttpRequest({
     method: "POST",
-    url: CONST.URL_API_COMMENT + '?t=' + moment(new Date()).format('x'),
+    url: CONST.URL_API_COMMENT + '?t=' + util.getUnixtime(),
     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
     data: JSON.stringify(reply_data)
   });

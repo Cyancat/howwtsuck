@@ -8,6 +8,11 @@ var CONST = {
 };
 
 CONST.URL_API_COMMENT = CONST.URL_BASE + '/api/comment';
+CONST.URL_API_CHAT = CONST.URL_BASE + '/api/team/chats';
+CONST.URL_API_TASKNO = CONST.URL_BASE + '/api/tasks/no/';
+CONST.URL_API_TASKCODE = CONST.URL_BASE + '/api/tasks/';
+CONST.URL_API_MESSAGE = CONST.URL_BASE + '/api/pigeon/messages';
+CONST.URL_API_READ_MESSAGE = CONST.URL_BASE + '/api/unreads/';
 
 var RCONST = {
   URL_WT_BASE: /^https:\/\/reimu\.worktile\.com/,
