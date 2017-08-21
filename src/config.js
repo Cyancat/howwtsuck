@@ -13,6 +13,7 @@ CONST.URL_API_TASKNO = CONST.URL_BASE + '/api/tasks/no/';
 CONST.URL_API_TASKCODE = CONST.URL_BASE + '/api/tasks/';
 CONST.URL_API_MESSAGE = CONST.URL_BASE + '/api/pigeon/messages';
 CONST.URL_API_READ_MESSAGE = CONST.URL_BASE + '/api/unreads/';
+CONST.URL_API_TEAM = CONST.URL_BASE + '/api/team';
 
 var RCONST = {
   URL_WT_BASE: /^https:\/\/reimu\.worktile\.com/,

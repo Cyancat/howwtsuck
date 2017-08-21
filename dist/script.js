@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.5.1
+// @version      0.5.2
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -22,7 +22,7 @@
 
   function ctCSS() {
     GM_addStyle(' \
-    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-comment-attachment{display:flex}.ws-comment-attachment label{color:#999}.ws-comment-attachment .ws-comment-attachment-container{margin-left:10px}.ws-comment-attachment .ws-comment-attachment-container ul{margin:0;padding:0;list-style:none}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
+    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-comment-attachment{display:flex}.ws-comment-attachment label{color:#999}.ws-comment-attachment .ws-comment-attachment-container{margin-left:10px}.ws-comment-attachment .ws-comment-attachment-container ul{margin:0;padding:0;list-style:none}.ws-comment-attachment .ws-comment-attachment-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
     ');
   }
 
@@ -73,6 +73,7 @@ CONST.URL_API_TASKNO = CONST.URL_BASE + '/api/tasks/no/';
 CONST.URL_API_TASKCODE = CONST.URL_BASE + '/api/tasks/';
 CONST.URL_API_MESSAGE = CONST.URL_BASE + '/api/pigeon/messages';
 CONST.URL_API_READ_MESSAGE = CONST.URL_BASE + '/api/unreads/';
+CONST.URL_API_TEAM = CONST.URL_BASE + '/api/team';
 
 var RCONST = {
   URL_WT_BASE: /^https:\/\/reimu\.worktile\.com/,
@@ -104,7 +105,7 @@ util.globalNotice = function(t) {
 
 util.getUnixtime = function() {
   return moment(new Date()).format('x');
-}
+};
 
 util.builder.attachments = function(data) {
   var html = $("<ul>", {
@@ -144,11 +145,19 @@ util.builder.priorityFormat = function(p) {
 
 util.url.taskcode = function(tc) {
   return CONST.URL_TASKCODE_PREFIX + tc;
-}
+};
+
+util.url.team = function() {
+  return CONST.URL_API_TEAM + '?t=' + util.getUnixtime();
+};
+
+util.url.submit_comment = function() {
+  return CONST.URL_API_COMMENT + '?t=' + util.getUnixtime()
+};
 
 util.url.read_message = function(ref_id, message_id) {
   return CONST.URL_API_READ_MESSAGE + ref_id + '/messages/' + message_id + '/unread?t=' + util.getUnixtime();
-}
+};
 
 util.commonmark.tcr = new commonmark.Parser();
 util.commonmark.tc = new commonmark.HtmlRenderer();
@@ -163,6 +172,7 @@ util.commonmark.mdParser = function(c) {
           .replace(/(^|[^"'])((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '$1<a target="_blank" href="$2">$2</a>'); // URL format ( for markdown lack)
           // TODO: Remove mac mark! See task #1615
           // TODO: Some @ isn't replaced , see task #3469
+          // TODO: Some regexp bug, see task #3577
 
           // TODO: Current markdown lack:
           // strikethrough
@@ -170,6 +180,24 @@ util.commonmark.mdParser = function(c) {
           // number list miss-change original number to sequence
   ;
 };
+
+GM_xmlhttpRequest({
+  method: 'GET',
+  url: util.url.team(),
+  onload: function(res){
+
+    util.members = JSON.parse(res.responseText).data.members.filter(function(m){
+      return m.name.indexOf('bot_') == -1;
+    });
+
+    util.members_key = {};
+    util.members.forEach(function(m) {
+      util.members_key[m.name] = m;
+    });
+
+  },
+  synchronous: true
+});
 
   /* endinject */
 
@@ -496,39 +524,209 @@ var reply_form = $('<form>', {
 });
 
 var reply_data = {
-  content: reply_form.find('textarea').text(),
+  content: reply_form.find('textarea').val(),
   type: 2,
   id: taskData.data._id,
   attachments: []
+};
+
+var $comment_at = $("<ul>", {
+  class: 'pure-menu-list'
+});
+
+var comment_at = {
+  flag: false,
+  start: 0,
+  removeList: function() {
+    comment_at.flag = false;
+    $comment_at.parent().hide();
+  },
+  updateList: function($comment_textarea) {
+
+    comment_at.textlo = comment_at.text.toLowerCase();
+    // console.log(comment_at.textlo);
+
+    comment_at.mb = util.members.filter(function(m){
+      return (m.name.toLowerCase() + m.display_name.toLowerCase() + m.display_name_pinyin.toLowerCase()).indexOf(comment_at.textlo) != -1;
+    }).sort(function(a, b){
+      return Math.max(a.name.indexOf(comment_at.textlo), a.display_name.indexOf(comment_at.textlo), a.display_name_pinyin.indexOf(comment_at.textlo)) -
+             Math.max(b.name.indexOf(comment_at.textlo), b.display_name.indexOf(comment_at.textlo), b.display_name_pinyin.indexOf(comment_at.textlo));
+    }).slice(0,4);
+
+    $comment_at.html('');
+    $comment_at.parent().css('top', -comment_at.mb.length * 38 + 'px');
+
+    comment_at.mb.forEach(function(m, m_c){
+      $comment_at.append(
+        $('<li>', {
+          class: 'pure-menu-item'
+        }).append( $('<a>', {
+          class: 'pure-menu-link' + (m_c == 0? ' active' : ''),
+          text: m.display_name + ' (' + m.name + ')',
+          'data-name': m.name,
+          hover: function() {
+            $(this).parent().parent().find('a.pure-menu-link').removeClass('active');
+            $(this).addClass('active');
+          }
+        }))
+      );
+    });
+
+    $comment_at.parent().show();
+
+  }
 };
 
 $("<fieldset>", {
     class: 'pure-group'
   }).append( $("<textarea>", {
     placeholder: '在此添加回复',
-    change: function(){
+    change: function() {
       reply_data.content = this.value;
     },
-    keydown: function(e){
-      if (e.ctrlKey && e.keyCode == 13) {
-        $(this).change();
+    keydown: function(e) {
+      var $this = $(this);
+      if ((e.ctrlKey && e.keyCode == 13)
+      || (e.metaKey && e.keyCode == 13)) {
+        $this.change();
         $('.ws-comment-reply').submit();
       }
+
+      // console.log($this.prop("selectionStart") - comment_at.start);
+      if ( comment_at.flag == true ) {
+
+        // Get current @ text without this keydown input
+        comment_at.text = $this.val().substring(comment_at.start + 1, $this.prop("selectionStart"));
+
+
+        // Because keydown is triggered before the key actually changed textarea's value
+        // The @ text should be fixed with the key
+        if ( e.keyCode == 46 || e.keyCode == 8) {
+          // Delete and backspace
+          if ($this.prop("selectionStart") - comment_at.start <= 1) {
+            comment_at.removeList();
+            return false;
+          } else {
+            comment_at.text = comment_at.text.substr(comment_at.start, comment_at.text.length - 1);
+          }
+
+        }
+        else if ( e.keyCode == 38) {
+          // Up
+          var $current_sel = $comment_at.find('.active'),
+              $prev_li = $current_sel.parent().prev();
+
+          if ( $prev_li.length > 0) {
+            $prev_li.find('.pure-menu-link').addClass('active');
+            $current_sel.removeClass('active');
+          }
+
+          return false;
+        }
+        else if ( e.keyCode == 40 ) {
+          // Down
+          var $current_sel = $comment_at.find('.active'),
+              $next_li = $current_sel.parent().next();
+
+          if ( $next_li.length > 0) {
+            $next_li.find('.pure-menu-link').addClass('active');
+            $current_sel.removeClass('active');
+          }
+
+          return false;
+        }
+        else if ( e.keyCode == 27 ) {
+          // Esc
+
+          $this.val(
+            $this.val().substring(0, comment_at.start) +
+            $this.val().substring($this.prop("selectionStart"), $this.val().length)
+          );
+          // console.log(
+          //   $this.val().substring(0, comment_at.start) +
+          //   $this.val().substring($this.prop("selectionStart"), $this.val().length)
+          // );
+          comment_at.removeList();
+
+          return false;
+        }
+        else if ( e.keyCode == 13 ) {
+          // Enter
+          var ta_value = $this.val(),
+              current_pos = $this.prop("selectionStart"),
+              a_name = $('.wt-comment-at-container').find('a.active').attr('data-name');
+
+          // console.log(ta_value.substring(comment_at.start + a_name.length - 1, comment_at.start + a_name.length));
+          $this.val(
+            ta_value.substring(0, comment_at.start) +
+            '@' + a_name +
+            (ta_value.substring(comment_at.start + a_name.length, comment_at.start + a_name.length + 1) == ' '? '':' ') + // if there is a space behind the @name, if not, add a space.
+            ta_value.substring($this.prop("selectionStart"), ta_value.length)
+          );
+
+          // Move cursor back to just behind the @name plus 1 space
+          $this.prop('selectionEnd', comment_at.start + a_name.length + 2);
+          comment_at.removeList();
+
+          return false;
+        }
+        else {
+
+          // Start deal non-functional key
+
+          // Keydown event will trigger before the textarea val actually changed
+          comment_at.text += String.fromCharCode(e.keyCode);
+        }
+
+        comment_at.updateList($this);
+
+      } else {
+        // comment_at.flag == false
+
+        if ( e.keyCode == 64 || (e.shiftKey && e.keyCode == 50)) {
+          // Direct @ or shft + 2
+          comment_at.start = $this.prop("selectionStart");
+          comment_at.flag = true;
+          // console.log(util.members);
+        }
+      }
+
+
     }
   })).append( $('<button>', {
     type: 'submit',
     class: 'pure-button pure-input-1-5 pure-button-primary',
     text: '回复'
-  }))
+  })).append( $('<div>', { class: 'wt-comment-at-container pure-menu pure-menu-scrollable'}).append($comment_at).hide() )
   .appendTo(reply_form);
 
 reply_form.submit(function(){
+  // TODO: replace @ person and tasknumber then submit
+  var $this = $(this),
+      $ta = $this.find('textarea'),
+      current_ta = $ta.val(),
+      ta_matches = current_ta.match(/@.+?\s/gi);
+
+  if ( ta_matches != null ) {
+    ta_matches.forEach(function(m){
+      var m_only = m.substring(1, m.length-1),
+          m_id = util.members_key[m_only].uid,
+          m_dname = util.members_key[m_only].display_name;
+      current_ta = current_ta.replace(eval('/@' + m_only + '/i'), '[@' + m_id + '|' + m_dname + ']');
+    });
+
+    reply_data.content = current_ta;
+  }
+
+  // console.log(reply_data);
+
   GM_xmlhttpRequest({
     method: "POST",
-    url: CONST.URL_API_COMMENT + '?t=' + util.getUnixtime(),
+    url: util.url.submit_comment(),
     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
     data: JSON.stringify(reply_data)
   });
+
 });
 
 reply_form.appendTo(comms);

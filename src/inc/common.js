@@ -16,7 +16,7 @@ util.globalNotice = function(t) {
 
 util.getUnixtime = function() {
   return moment(new Date()).format('x');
-}
+};
 
 util.builder.attachments = function(data) {
   var html = $("<ul>", {
@@ -56,11 +56,19 @@ util.builder.priorityFormat = function(p) {
 
 util.url.taskcode = function(tc) {
   return CONST.URL_TASKCODE_PREFIX + tc;
-}
+};
+
+util.url.team = function() {
+  return CONST.URL_API_TEAM + '?t=' + util.getUnixtime();
+};
+
+util.url.submit_comment = function() {
+  return CONST.URL_API_COMMENT + '?t=' + util.getUnixtime()
+};
 
 util.url.read_message = function(ref_id, message_id) {
   return CONST.URL_API_READ_MESSAGE + ref_id + '/messages/' + message_id + '/unread?t=' + util.getUnixtime();
-}
+};
 
 util.commonmark.tcr = new commonmark.Parser();
 util.commonmark.tc = new commonmark.HtmlRenderer();
@@ -75,6 +83,7 @@ util.commonmark.mdParser = function(c) {
           .replace(/(^|[^"'])((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '$1<a target="_blank" href="$2">$2</a>'); // URL format ( for markdown lack)
           // TODO: Remove mac mark! See task #1615
           // TODO: Some @ isn't replaced , see task #3469
+          // TODO: Some regexp bug, see task #3577
 
           // TODO: Current markdown lack:
           // strikethrough
@@ -82,3 +91,21 @@ util.commonmark.mdParser = function(c) {
           // number list miss-change original number to sequence
   ;
 };
+
+GM_xmlhttpRequest({
+  method: 'GET',
+  url: util.url.team(),
+  onload: function(res){
+
+    util.members = JSON.parse(res.responseText).data.members.filter(function(m){
+      return m.name.indexOf('bot_') == -1;
+    });
+
+    util.members_key = {};
+    util.members.forEach(function(m) {
+      util.members_key[m.name] = m;
+    });
+
+  },
+  synchronous: true
+});
