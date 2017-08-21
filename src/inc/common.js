@@ -74,6 +74,7 @@ util.commonmark.mdParser = function(c) {
           // TODO: Continuous tasks could cause a error parse, see #3413's comment
           .replace(/(^|[^"'])((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '$1<a target="_blank" href="$2">$2</a>'); // URL format ( for markdown lack)
           // TODO: Remove mac mark! See task #1615
+          // TODO: Some @ isn't replaced , see task #3469
 
           // TODO: Current markdown lack:
           // strikethrough
