@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.5.0
+// @version      0.5.1
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*

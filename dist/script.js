@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.5.0
+// @version      0.5.1
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -659,6 +659,31 @@ var deal_task_activity = function(res) {
 
 };
 
+var task_activity_util = {};
+task_activity_util.markRead = function(task_activity, self, remove_self) {
+  var $that = $(self);
+  task_activity.activity.forEach(function(ta_del){
+    if ( ta_del.is_unread ){
+      // console.log('Start delete ' + ta_del.id);
+      GM_xmlhttpRequest({
+        method: "DELETE",
+        url: util.url.read_message(ta_ref_id, ta_del.id),
+        onload: function(res) {
+          if (JSON.parse(res.responseText).code == 200) {
+            // console.log(res.responseText);
+            if (remove_self) {  
+              $that.remove();
+              // console.log('Delete success');
+            } else {
+              $that.parent().find('.wt_unread_mark').remove();
+            }
+          }
+        }
+      });
+    }
+  });
+};
+
 
 // Get ref_id of Task Assistant bot
 GM_xmlhttpRequest({
@@ -716,25 +741,24 @@ GM_xmlhttpRequest({
             tasks_activity.forEach(function(ta){
               var current_ta_html = (function(){
                 return ta.is_unread ?
-                  $('<li>').append( $('<span>', {text: '[未读] '}) ) : $('<li>');
+                  $('<li>')
+                    .append( $('<a>', {
+                        text: '[未读]',
+                        class: 'wt_unread_mark',
+                        href: 'javascript:;',
+                        click: function(){
+                          task_activity_util.markRead(ta, this, 1);
+                        }
+                      })
+                    )
+                    .append( ' ' ) : $('<li>');
               })()
                 .append( $('<a>', {
                   text: ta.title,
                   target: '_blank',
                   href: util.url.taskcode(ta.taskcode),
                   click: function(){
-                    ta.activity.forEach(function(ta_d_a){
-                      if ( ta_d_a.is_unread ){
-                        // console.log('Start delete ' + ta_d_a.id);
-                        GM_xmlhttpRequest({
-                          method: "DELETE",
-                          url: util.url.read_message(ta_ref_id, ta_d_a.id),
-                          onload: function(res) {
-                            // console.log('Delete message ' + ta_d_a.id);
-                          }
-                        });
-                      }
-                    });
+                    task_activity_util.markRead(ta, this);
                   }
                 }));
 
