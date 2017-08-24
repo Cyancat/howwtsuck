@@ -20,7 +20,7 @@ util.getUnixtime = function() {
 
 util.builder.attachments = function(data) {
   var html = $("<ul>", {
-    class: "ws-attachment"
+    class: "ws-attachments-list"
   });
 
   data.forEach(function(at){

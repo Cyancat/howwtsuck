@@ -4,6 +4,12 @@ newHTML.find('.ws-content-container').html(
     util.commonmark.mdParser(taskData.data.description) : "没有绵羊 ( ⊙_⊙)"
 );
 
+// Task attachments
+if (taskData.data.attachments.length > 0) {
+  newHTML.find('.ws-task-attachments').removeClass('hidden').find('.ws-attachments-container')
+    .append(util.builder.attachments(taskData.data.attachments));
+}
+
 // Task subtasks
 if (taskData.data.children.length > 0) {
   var subtask_container = newHTML.find('.ws-subtask-container').removeClass('hidden').find('ul');

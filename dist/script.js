@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.5.2
+// @version      0.5.3
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -22,7 +22,7 @@
 
   function ctCSS() {
     GM_addStyle(' \
-    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-comment-attachment{display:flex}.ws-comment-attachment label{color:#999}.ws-comment-attachment .ws-comment-attachment-container{margin-left:10px}.ws-comment-attachment .ws-comment-attachment-container ul{margin:0;padding:0;list-style:none}.ws-comment-attachment .ws-comment-attachment-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
+    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-attachments{display:flex}.ws-attachments label{color:#999}.ws-attachments .ws-attachments-container{margin-left:10px}.ws-attachments .ws-attachments-container ul{margin:0;padding:0;list-style:none}.ws-attachments .ws-attachments-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
     ');
   }
 
@@ -45,6 +45,10 @@
   <div class="ws-issue-container pure-u-1-2"> \
     <div class="ws-content-container pure-u-1"> \
       <pre></pre> \
+    </div> \
+    <div class="ws-task-attachments ws-attachments hidden"> \
+      <label>附件:</label> \
+      <div class="ws-attachments-container"></div> \
     </div> \
     <div class="ws-subtask-container hidden"> \
       <h2>子任务</h2> \
@@ -109,7 +113,7 @@ util.getUnixtime = function() {
 
 util.builder.attachments = function(data) {
   var html = $("<ul>", {
-    class: "ws-attachment"
+    class: "ws-attachments-list"
   });
 
   data.forEach(function(at){
@@ -454,6 +458,12 @@ newHTML.find('.ws-content-container').html(
     util.commonmark.mdParser(taskData.data.description) : "没有绵羊 ( ⊙_⊙)"
 );
 
+// Task attachments
+if (taskData.data.attachments.length > 0) {
+  newHTML.find('.ws-task-attachments').removeClass('hidden').find('.ws-attachments-container')
+    .append(util.builder.attachments(taskData.data.attachments));
+}
+
 // Task subtasks
 if (taskData.data.children.length > 0) {
   var subtask_container = newHTML.find('.ws-subtask-container').removeClass('hidden').find('ul');
@@ -502,17 +512,16 @@ taskData.data.comments.forEach(function(e){
   // Comment attachments
   if (e.attachments.length > 0) {
     $("<div>", {
-      class: "ws-comment-attachment"
+      class: "ws-attachments"
     }).appendTo(comm)
       .append( $("<label>", {
-        class: "ws-comment-attachment-label",
         text: "附件:"
       }))
-      .append( $("<div>", {
-        class: "ws-comment-attachment-container"
-      }));
-
-    comm.find('.ws-comment-attachment-container').append(util.builder.attachments(e.attachments));
+      .append(
+        $("<div>", {
+          class: "ws-attachments-container"
+        }).append(util.builder.attachments(e.attachments))
+      );
   };
 
   comms.append(comm);

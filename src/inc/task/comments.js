@@ -20,17 +20,16 @@ taskData.data.comments.forEach(function(e){
   // Comment attachments
   if (e.attachments.length > 0) {
     $("<div>", {
-      class: "ws-comment-attachment"
+      class: "ws-attachments"
     }).appendTo(comm)
       .append( $("<label>", {
-        class: "ws-comment-attachment-label",
         text: "附件:"
       }))
-      .append( $("<div>", {
-        class: "ws-comment-attachment-container"
-      }));
-
-    comm.find('.ws-comment-attachment-container').append(util.builder.attachments(e.attachments));
+      .append(
+        $("<div>", {
+          class: "ws-attachments-container"
+        }).append(util.builder.attachments(e.attachments))
+      );
   };
 
   comms.append(comm);
