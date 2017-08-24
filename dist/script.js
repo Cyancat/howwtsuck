@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.5.3
+// @version      0.5.4
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -41,6 +41,7 @@
     <span class="ws-task-meta ws-task-begin-date"></span> \
     <span class="ws-task-meta ws-task-due-date"></span> \
     <span class="ws-task-meta ws-task-priority"></span> \
+    <span class="ws-task-meta ws-task-tags"></span> \
   </div> \
   <div class="ws-issue-container pure-u-1-2"> \
     <div class="ws-content-container pure-u-1"> \
@@ -52,6 +53,10 @@
     </div> \
     <div class="ws-subtask-container hidden"> \
       <h2>子任务</h2> \
+      <ul class="pure-menu-list"></ul> \
+    </div> \
+    <div class="ws-watchers-container hidden"> \
+      <h2>相关人员</h2> \
       <ul class="pure-menu-list"></ul> \
     </div> \
   </div> \
@@ -449,6 +454,17 @@ newHTML.find('.ws-task-priority')
   .append($('<label>', { text: '优先级: ' }))
   .append(util.builder.priorityFormat(taskData.data.priority));
 
+
+// Task tags
+var newHTML_tags = newHTML.find('.ws-task-tags')
+  .append($('<label>', { text: '标签: '}));
+
+if (taskData.data.tags.length > 0) {
+  taskData.data.tags.forEach(function(t,l){
+    newHTML_tags.append( $('<span>', { text: (l == 0 ? '' : ', ') + t.name }));
+  });
+}
+
       /* endinject */
 
       /* include:inc/task/main.js */
@@ -483,9 +499,20 @@ if (taskData.data.children.length > 0) {
     });
   });
 }
-// TODO: Add tags
-// TODO: Add attachments
-// TODO: Add watchers
+
+// Task watchers
+if (taskData.data.watchers.length > 0) {
+  var watchers_container = newHTML.find('.ws-watchers-container').removeClass('hidden').find('ul');
+  taskData.data.watchers.forEach(function(w){
+    watchers_container.append(function(){
+      var subtask_li = $('<li>', {
+        class: 'pure-menu-item',
+        text: w.display_name
+      });
+      return subtask_li;
+    });
+  });
+}
 
       /* endinject */
 

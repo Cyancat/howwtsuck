@@ -29,6 +29,17 @@ if (taskData.data.children.length > 0) {
     });
   });
 }
-// TODO: Add tags
-// TODO: Add attachments
-// TODO: Add watchers
+
+// Task watchers
+if (taskData.data.watchers.length > 0) {
+  var watchers_container = newHTML.find('.ws-watchers-container').removeClass('hidden').find('ul');
+  taskData.data.watchers.forEach(function(w){
+    watchers_container.append(function(){
+      var subtask_li = $('<li>', {
+        class: 'pure-menu-item',
+        text: w.display_name
+      });
+      return subtask_li;
+    });
+  });
+}

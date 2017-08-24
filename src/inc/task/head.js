@@ -82,3 +82,14 @@ newHTML.find('.ws-task-due-date')
 newHTML.find('.ws-task-priority')
   .append($('<label>', { text: '优先级: ' }))
   .append(util.builder.priorityFormat(taskData.data.priority));
+
+
+// Task tags
+var newHTML_tags = newHTML.find('.ws-task-tags')
+  .append($('<label>', { text: '标签: '}));
+
+if (taskData.data.tags.length > 0) {
+  taskData.data.tags.forEach(function(t,l){
+    newHTML_tags.append( $('<span>', { text: (l == 0 ? '' : ', ') + t.name }));
+  });
+}
