@@ -80,8 +80,6 @@ if (taskData.data.visibility) {
 
 
 // Task assignment
-// https://reimu.worktile.com/api/tasks/595dbdc8c0c9f24f5644acbd/assign/4d8245caf04a4af28e1be6b216ccc37b?aid=&t=1506157275553
-// https://reimu.worktile.com/api/tasks/595dbdc8c0c9f24f5644acbd/assign/4d8245caf04a4af28e1be6b216ccc37b?aid=&t=1506164500103
 if (taskData.data.assignment) {
   newHTML.find('.ws-task-assign')
     .append($('<label>', { text: '指派给: ' }))
@@ -107,19 +105,14 @@ newHTML.find('.ws-task-assign a').click(function(e){
       method: 'PUT',
       url: util.url.task_assign(taskData.data._id, me.uid),
       onload: function(res){
-        console.log(res);
         if (JSON.parse(res.responseText).code == 200) {
           $(assign_this).text('@' + me.display_name);
         }
       }
     });
-  }).appendTo('body');
+  });
   seletMenu.find('input').focus();
   e.stopPropagation();
-  $('body').on('click', function(){
-    $(seletMenu).remove();
-    $('body').off('click');
-  });
 });
 
 
@@ -155,10 +148,51 @@ newHTML.find('.ws-task-due-date')
      text: due_date
    }));
 
+
+
+
+
+
+
+
+
+
 // Task priority
 newHTML.find('.ws-task-priority')
   .append($('<label>', { text: '优先级: ' }))
-  .append(util.builder.priorityFormat(taskData.data.priority));
+  .append($('<a>', {
+    href: 'javascript:;',
+    text: util.builder.priorityFormat(taskData.data.priority),
+    click: function(e) {
+      var prio_this = this;
+      var selectMenu = util.builder.selectMenu(e.clientX, e.clientY, ['高', '中', '低', '不设定'], 0, function(en){
+        GM_xmlhttpRequest({
+          method: 'PUT',
+          url: util.url.task_api(taskData.data._id),
+          headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+          data: JSON.stringify({priority: util.builder.priorityFormat(en)}),
+          onload: function(res){
+            var r = JSON.parse(res.responseText);
+            if (r.code == 200) {
+              $(prio_this).text(util.builder.priorityFormat(r.data.priority));
+            }
+          }
+        });
+      });
+      e.stopPropagation();
+    }
+  }));
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Task tags
