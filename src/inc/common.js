@@ -63,11 +63,15 @@ util.url.team = function() {
 };
 
 util.url.submit_comment = function() {
-  return CONST.URL_API_COMMENT + '?t=' + util.getUnixtime()
+  return CONST.URL_API_COMMENT + '?t=' + util.getUnixtime();
 };
 
 util.url.read_message = function(ref_id, message_id) {
   return CONST.URL_API_READ_MESSAGE + ref_id + '/messages/' + message_id + '/unread?t=' + util.getUnixtime();
+};
+
+util.url.task_assign = function(task_id, assignee_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/assign/' + assignee_id + '?aid=&t=' + util.getUnixtime();
 };
 
 util.commonmark.tcr = new commonmark.Parser();
@@ -109,3 +113,64 @@ GM_xmlhttpRequest({
   },
   synchronous: true
 });
+
+
+
+
+
+
+
+
+
+
+util.builder.selectMenu = function(x, y, cb) {
+  var filtered_members = util.members,
+      selecMenu_this = this;
+
+
+  var selectMenu_gen = function() {
+    var menu_ul = newMenu.find('.pure-menu-list');
+    menu_ul.html('');
+    filtered_members.slice(0,4).forEach(function(me){
+      menu_ul.append($('<li>', {
+          class: 'pure-menu-item'
+        }).append($('<a>', {
+            class: 'pure-menu-link',
+            text: me.display_name + ' (' + me.name + ')',
+            click: function(e){
+              cb(me);
+            }
+          })));
+    });
+  };
+
+  var newMenu = $('<div>', {
+    class: 'pure-menu ws-selectMenu',
+    style: 'left: ' + x + 'px; top: ' + y + 'px;'
+  }).append($('<form>', {
+      class: 'pure-form'
+      }).append($('<input>', {
+        type: 'text'
+      })))
+    .append($('<ul>', {
+      class: 'pure-menu-list'
+    }));
+
+  newMenu.find('input').on('input', function(e){
+    var input_text = $(this).val();
+
+    filtered_members = util.members.filter(function(m){
+      return (m.name.toLowerCase() + m.display_name.toLowerCase() + m.display_name_pinyin.toLowerCase()).indexOf(input_text) != -1;
+    }).sort(function(a, b){
+      return Math.max(a.name.indexOf(input_text), a.display_name.indexOf(input_text), a.display_name_pinyin.indexOf(input_text)) -
+             Math.max(b.name.indexOf(input_text), b.display_name.indexOf(input_text), b.display_name_pinyin.indexOf(input_text));
+    }).slice(0,4);
+
+    selectMenu_gen();
+  }).click(function(e){
+    e.stopPropagation();
+  });
+
+  selectMenu_gen();
+  return newMenu;
+};
