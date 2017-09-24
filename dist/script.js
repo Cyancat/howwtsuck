@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.6.0
+// @version      0.6.1
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -22,7 +22,7 @@
 
   function ctCSS() {
     GM_addStyle(' \
-    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-attachments{display:flex}.ws-attachments label{color:#999}.ws-attachments .ws-attachments-container{margin-left:10px}.ws-attachments .ws-attachments-container ul{margin:0;padding:0;list-style:none}.ws-attachments .ws-attachments-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left;text-decoration:none}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-selectMenu{position:absolute;left:0;top:0;border:1px solid #ccc;width:200px;background:#fff}.ws-selectMenu input[type=text]{width:100%;border-radius:0!important}.ws-selectMenu a.pure-menu-link{cursor:pointer}.ws-content-user{color:#91d6d5}.ws-content-tasklink{color:#f9a5a1}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
+    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-attachments{display:flex}.ws-attachments label{color:#999}.ws-attachments .ws-attachments-container{margin-left:10px}.ws-attachments .ws-attachments-container ul{margin:0;padding:0;list-style:none}.ws-attachments .ws-attachments-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left;text-decoration:none}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-selectMenu{position:absolute;left:0;top:0;border:1px solid #ccc;width:200px;background:#fff}.ws-selectMenu input[type=text]{width:100%;border-radius:0!important}.ws-selectMenu a.pure-menu-link{cursor:pointer}.ws-content-user{color:#91d6d5;margin-right:10px}.ws-content-tasklink{color:#f9a5a1;margin-right:10px}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
     ');
   }
 
@@ -203,18 +203,16 @@ util.commonmark.mdParser = function(c) {
   // Markdown parse combined with worktile custom link.
   return this.tc.render(this.tcr.parse(c))
           .replace(/\n([^\<])/gi, "<br>$1") // Fix a wired situation
-          .replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>') // @
-          .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
-          // TODO: Continuous tasks could cause a error parse, see #3413's comment
+          .replace(/~~(.+?)~~/g, '<strike>$1</strike>') // strikethrough format
+          .replace(/\[@.+?\|(.+?)\]/g, '<span class="ws-content-user">@$1</span>') // @ user
+          .replace(/\[#task-(.+?)\|(.+?)\]/g, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
           .replace(/(^|[^"'])((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '$1<a target="_blank" href="$2">$2</a>'); // URL format ( for markdown lack)
           // TODO: Remove mac mark! See task #1615
-          // TODO: Some @ isn't replaced , see task #3469
-          // TODO: Some regexp bug, see task #3577
+          // TODO: Some regexp bug, see task #3577; hmmm may be resolved?
 
           // TODO: Current markdown lack:
-          // strikethrough
           // table
-          // number list miss-change original number to sequence
+          // NOT TODO: number list miss-change original number to sequence = this do is the setting
   ;
 };
 

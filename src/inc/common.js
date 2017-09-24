@@ -105,18 +105,16 @@ util.commonmark.mdParser = function(c) {
   // Markdown parse combined with worktile custom link.
   return this.tc.render(this.tcr.parse(c))
           .replace(/\n([^\<])/gi, "<br>$1") // Fix a wired situation
-          .replace(/\[@.*\|(.*)\]/, '<span class="ws-content-user">@$1</span>') // @
-          .replace(/\[#task-(.*)\|(.*)\]/, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
-          // TODO: Continuous tasks could cause a error parse, see #3413's comment
+          .replace(/~~(.+?)~~/g, '<strike>$1</strike>') // strikethrough format
+          .replace(/\[@.+?\|(.+?)\]/g, '<span class="ws-content-user">@$1</span>') // @ user
+          .replace(/\[#task-(.+?)\|(.+?)\]/g, '<a class="ws-content-tasklink" href="/taskcode/$1">$2</a>') // Task link
           .replace(/(^|[^"'])((http|ftp|https):\/\/[\w-]+(\.[\w-]+)*([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, '$1<a target="_blank" href="$2">$2</a>'); // URL format ( for markdown lack)
           // TODO: Remove mac mark! See task #1615
-          // TODO: Some @ isn't replaced , see task #3469
-          // TODO: Some regexp bug, see task #3577
+          // TODO: Some regexp bug, see task #3577; hmmm may be resolved?
 
           // TODO: Current markdown lack:
-          // strikethrough
           // table
-          // number list miss-change original number to sequence
+          // NOT TODO: number list miss-change original number to sequence = this do is the setting
   ;
 };
 
