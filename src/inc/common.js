@@ -67,7 +67,7 @@ util.builder.tags = function(tags_html) {
       tags_html.append( $('<li>', { text: t.name }));
     }
   });
-}
+};
 
 
 
@@ -401,7 +401,7 @@ util.builder.selectTagsMenu = function(x, y, cb, ttags) {
     selectMenu_gen();
   }).click(function(e){
     e.stopPropagation();
-  })
+  });
 
   selectMenu_gen();
 

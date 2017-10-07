@@ -1,5 +1,41 @@
+// Task edit
+var content_editor = newHTML.find('.ws-content-container-editor'),
+    content_editor_submit = content_editor.find('button[type=submit]');
+content_editor.hide();
+content_editor.find('textarea').val(taskData.data.description) // Init hide and content
+  .keydown(function(e){
+    if ((e.ctrlKey && e.keyCode == 13) || (e.metaKey && e.keyCode == 13)) {
+      content_editor_submit.click();
+    }
+  });
+
+content_editor.find('button[type=button]').click(function(){
+  content_editor.find('textarea').val(taskData.data.description); // Reset content
+  newHTML.find('.ws-content-editlink').click();
+});
+
+content_editor_submit.click(function(){
+  GM_xmlhttpRequest({
+    method: 'PUT',
+    url: util.url.task_api(taskData.data._id),
+    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+    data: JSON.stringify({description: content_editor.find('textarea').val()}),
+    onload: function(res){
+      var r = JSON.parse(res.responseText);
+      if (r.code != 200) {
+        return false;
+      }
+    }
+  });
+});
+
+newHTML.find('.ws-content-editlink').click(function(){
+  newHTML.find('.ws-content-container-showcase').toggle();
+  newHTML.find('.ws-content-container-editor').toggle();
+});
+
 // Task description
-newHTML.find('.ws-content-container').html(
+newHTML.find('.ws-content-container-showcase').html(
   taskData.data.description ?
     util.commonmark.mdParser(taskData.data.description) : "没有绵羊 ( ⊙_⊙)"
 );

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.7
+// @version      0.8
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -22,7 +22,7 @@
 
   function ctCSS() {
     GM_addStyle(' \
-    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-attachments{display:flex}.ws-attachments label{color:#999}.ws-attachments .ws-attachments-container{margin-left:10px}.ws-attachments .ws-attachments-container ul{margin:0;padding:0;list-style:none}.ws-attachments .ws-attachments-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-tags ul{display:inline;margin:0;padding:0}.ws-task-tags ul li{display:inline;list-style:none}.ws-task-tags ul li:after{content:", "}.ws-task-tags ul li:last-child:after{content:""}.ws-task-status{padding:5px 10px;float:left;text-decoration:none}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-task-meta-edit{font-size:10px;margin-left:10px}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-selectMenu{position:absolute;left:0;top:0;border:1px solid #ccc;width:200px;background:#fff}.ws-selectMenu ul.pure-menu-list{max-height:200px;overflow:scroll}.ws-selectMenu input[type=text]{width:100%;border-radius:0!important}.ws-selectMenu a.pure-menu-link{cursor:pointer}.ws-selectMenu a.pure-menu-link .ws-selectMenu-selected{float:right;margin-right:5px}.ws-selectMenu a.pure-menu-link.active{background-color:#eee!important}.ws-selectMenu a.pure-menu-link:hover{background-color:transparent}.ws-content-user{color:#91d6d5;margin-right:10px}.ws-content-tasklink{color:#f9a5a1;margin-right:10px}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
+    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-content-container-editor{margin-bottom:50px}.ws-content-container-editor textarea{margin-bottom:10px;height:300px}.ws-attachments{display:flex}.ws-attachments label{color:#999}.ws-attachments .ws-attachments-container{margin-left:10px}.ws-attachments .ws-attachments-container ul{margin:0;padding:0;list-style:none}.ws-attachments .ws-attachments-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-tags ul{display:inline;margin:0;padding:0}.ws-task-tags ul li{display:inline;list-style:none}.ws-task-tags ul li:after{content:", "}.ws-task-tags ul li:last-child:after{content:""}.ws-task-status{padding:5px 10px;float:left;text-decoration:none}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-task-meta-edit{font-size:10px;margin-left:10px}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-selectMenu{position:absolute;left:0;top:0;border:1px solid #ccc;width:200px;background:#fff}.ws-selectMenu ul.pure-menu-list{max-height:200px;overflow:scroll}.ws-selectMenu input[type=text]{width:100%;border-radius:0!important}.ws-selectMenu a.pure-menu-link{cursor:pointer}.ws-selectMenu a.pure-menu-link .ws-selectMenu-selected{float:right;margin-right:5px}.ws-selectMenu a.pure-menu-link.active{background-color:#eee!important}.ws-selectMenu a.pure-menu-link:hover{background-color:transparent}.ws-content-user{color:#91d6d5;margin-right:10px}.ws-content-tasklink{color:#f9a5a1;margin-right:10px}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
     ');
   }
 
@@ -47,9 +47,15 @@
     </span> \
   </div> \
   <div class="ws-issue-container pure-u-1-2"> \
-    <div class="ws-content-container pure-u-1"> \
+    <a class="ws-content-editlink" href="javascript:;">编辑描述</a> \
+    <div class="ws-content-container-showcase pure-u-1"> \
       <pre></pre> \
     </div> \
+    <form class="ws-content-container-editor pure-form pure-u-1" action=""> \
+      <textarea class="pure-u-1"></textarea> \
+      <button type="submit" class="pure-button pure-input-1-5 pure-button-primary">提交</button> \
+      <button type="button" class="pure-button pure-input-1-5">取消</button> \
+    </form> \
     <div class="ws-task-attachments ws-attachments hidden"> \
       <label>附件:</label> \
       <div class="ws-attachments-container"></div> \
@@ -169,7 +175,7 @@ util.builder.tags = function(tags_html) {
       tags_html.append( $('<li>', { text: t.name }));
     }
   });
-}
+};
 
 
 
@@ -503,7 +509,7 @@ util.builder.selectTagsMenu = function(x, y, cb, ttags) {
     selectMenu_gen();
   }).click(function(e){
     e.stopPropagation();
-  })
+  });
 
   selectMenu_gen();
 
@@ -940,8 +946,44 @@ util.datahandle.tags = setInterval(function(){
       /* endinject */
 
       /* include:inc/task/main.js */
-      // Task description
-newHTML.find('.ws-content-container').html(
+      // Task edit
+var content_editor = newHTML.find('.ws-content-container-editor'),
+    content_editor_submit = content_editor.find('button[type=submit]');
+content_editor.hide();
+content_editor.find('textarea').val(taskData.data.description) // Init hide and content
+  .keydown(function(e){
+    if ((e.ctrlKey && e.keyCode == 13) || (e.metaKey && e.keyCode == 13)) {
+      content_editor_submit.click();
+    }
+  });
+
+content_editor.find('button[type=button]').click(function(){
+  content_editor.find('textarea').val(taskData.data.description); // Reset content
+  newHTML.find('.ws-content-editlink').click();
+});
+
+content_editor_submit.click(function(){
+  GM_xmlhttpRequest({
+    method: 'PUT',
+    url: util.url.task_api(taskData.data._id),
+    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+    data: JSON.stringify({description: content_editor.find('textarea').val()}),
+    onload: function(res){
+      var r = JSON.parse(res.responseText);
+      if (r.code != 200) {
+        return false;
+      }
+    }
+  });
+});
+
+newHTML.find('.ws-content-editlink').click(function(){
+  newHTML.find('.ws-content-container-showcase').toggle();
+  newHTML.find('.ws-content-container-editor').toggle();
+});
+
+// Task description
+newHTML.find('.ws-content-container-showcase').html(
   taskData.data.description ?
     util.commonmark.mdParser(taskData.data.description) : "没有绵羊 ( ⊙_⊙)"
 );
