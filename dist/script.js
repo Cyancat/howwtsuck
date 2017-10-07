@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.6.1
+// @version      0.7
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -22,7 +22,7 @@
 
   function ctCSS() {
     GM_addStyle(' \
-    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-attachments{display:flex}.ws-attachments label{color:#999}.ws-attachments .ws-attachments-container{margin-left:10px}.ws-attachments .ws-attachments-container ul{margin:0;padding:0;list-style:none}.ws-attachments .ws-attachments-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-status{padding:5px 10px;float:left;text-decoration:none}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-selectMenu{position:absolute;left:0;top:0;border:1px solid #ccc;width:200px;background:#fff}.ws-selectMenu input[type=text]{width:100%;border-radius:0!important}.ws-selectMenu a.pure-menu-link{cursor:pointer}.ws-content-user{color:#91d6d5;margin-right:10px}.ws-content-tasklink{color:#f9a5a1;margin-right:10px}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
+    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-attachments{display:flex}.ws-attachments label{color:#999}.ws-attachments .ws-attachments-container{margin-left:10px}.ws-attachments .ws-attachments-container ul{margin:0;padding:0;list-style:none}.ws-attachments .ws-attachments-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-tags ul{display:inline;margin:0;padding:0}.ws-task-tags ul li{display:inline;list-style:none}.ws-task-tags ul li:after{content:", "}.ws-task-tags ul li:last-child:after{content:""}.ws-task-status{padding:5px 10px;float:left;text-decoration:none}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-task-meta-edit{font-size:10px;margin-left:10px}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-selectMenu{position:absolute;left:0;top:0;border:1px solid #ccc;width:200px;background:#fff}.ws-selectMenu ul.pure-menu-list{max-height:200px;overflow:scroll}.ws-selectMenu input[type=text]{width:100%;border-radius:0!important}.ws-selectMenu a.pure-menu-link{cursor:pointer}.ws-selectMenu a.pure-menu-link .ws-selectMenu-selected{float:right;margin-right:5px}.ws-selectMenu a.pure-menu-link.active{background-color:#eee!important}.ws-selectMenu a.pure-menu-link:hover{background-color:transparent}.ws-content-user{color:#91d6d5;margin-right:10px}.ws-content-tasklink{color:#f9a5a1;margin-right:10px}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
     ');
   }
 
@@ -41,7 +41,10 @@
     <span class="ws-task-meta ws-task-begin-date"></span> \
     <span class="ws-task-meta ws-task-due-date"></span> \
     <span class="ws-task-meta ws-task-priority"></span> \
-    <span class="ws-task-meta ws-task-tags"></span> \
+    <span class="ws-task-meta ws-task-tags"> \
+      <label>标签: </label> \
+      <ul></ul> \
+    </span> \
   </div> \
   <div class="ws-issue-container pure-u-1-2"> \
     <div class="ws-content-container pure-u-1"> \
@@ -83,6 +86,7 @@ CONST.URL_API_TASKCODE = CONST.URL_BASE + '/api/tasks/';
 CONST.URL_API_MESSAGE = CONST.URL_BASE + '/api/pigeon/messages';
 CONST.URL_API_READ_MESSAGE = CONST.URL_BASE + '/api/unreads/';
 CONST.URL_API_TEAM = CONST.URL_BASE + '/api/team';
+CONST.URL_API_TAGS = CONST.URL_BASE + '/api/tags';
 
 var RCONST = {
   URL_WT_BASE: /^https:\/\/reimu\.worktile\.com/,
@@ -99,7 +103,9 @@ var RCONST = {
   var util = {
   builder: {},
   url: {},
-  commonmark: {}
+  commonmark: {},
+  datamark: {},
+  datahandle: {}
 };
 
 util.cleanHTML = function() {
@@ -156,6 +162,15 @@ util.builder.priorityFormat = function(p) {
   }
 };
 
+util.builder.tags = function(tags_html) {
+  tags_html.find('li').remove();
+  util.tags.forEach(function(t, l){
+    if (util.tags_key[t.name].ttag_mark == true) {
+      tags_html.append( $('<li>', { text: t.name }));
+    }
+  });
+}
+
 
 
 
@@ -188,6 +203,14 @@ util.url.task_assign = function(task_id, assignee_id) {
   return CONST.URL_API_TASKCODE + task_id + '/assign/' + assignee_id + '?aid=&t=' + util.getUnixtime();
 };
 
+util.url.tags = function() {
+  return CONST.URL_API_TAGS + '?type=2&t=' + util.getUnixtime();
+};
+
+util.url.tags_modify = function(task_id, tag_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/tags/' + tag_id + '?t=' + util.getUnixtime();
+};
+
 
 
 
@@ -216,6 +239,15 @@ util.commonmark.mdParser = function(c) {
   ;
 };
 
+
+
+
+
+
+
+
+
+
 GM_xmlhttpRequest({
   method: 'GET',
   url: util.url.team(),
@@ -234,6 +266,26 @@ GM_xmlhttpRequest({
   synchronous: true
 });
 
+util.datamark.tags = false;
+GM_xmlhttpRequest({
+  method: 'GET',
+  url: util.url.tags(),
+  onload: function(res1){
+
+    util.tags = JSON.parse(res1.responseText).data;
+
+    util.tags_key = {};
+    util.tags.forEach(function(m) {
+      util.tags_key[m.name] = m;
+      util.tags_key[m.name].ttag_mark = false;
+    });
+
+    util.datamark.tags = true;
+
+  },
+  synchronous: true
+});
+
 
 
 
@@ -244,12 +296,39 @@ GM_xmlhttpRequest({
 util.builder.selectMenu = function(x, y, entries, hasInput, cb) {
 
   var newMenu_input = '';
+
   if (hasInput) {
     newMenu_input =
       $('<form>', {
         class: 'pure-form'
         }).append($('<input>', {
-          type: 'text'
+          type: 'text',
+          keydown: function(e) {
+            if ( e.keyCode == 38 || e.keyCode == 40) {
+              // Up = 38, Down = 40
+              var $menuParent = $(this).parents('.ws-selectMenu'),
+                  $current_sel = $menuParent.find('.pure-menu-list .active'),
+                  $prev_li, $next_li;
+
+              if ($current_sel.length > 0) {
+                $prev_li = $current_sel.parent().prev();
+                $next_li = $current_sel.parent().next();
+
+                if ( e.keyCode == 38 && $prev_li.length > 0) {
+                  $prev_li.find('.pure-menu-link').addClass('active');
+                  $current_sel.removeClass('active');
+                }
+                if ( e.keyCode == 40 && $next_li.length > 0) {
+                  $next_li.find('.pure-menu-link').addClass('active');
+                  $current_sel.removeClass('active');
+                }
+              } else {
+                $menuParent.find('.pure-menu-item:eq(0) .pure-menu-link').addClass('active');
+              }
+
+              return false;
+            }
+          }
         }));
   }
   var newMenu = $('<div>', {
@@ -274,6 +353,10 @@ util.builder.selectMenu = function(x, y, entries, hasInput, cb) {
           })));
     });
 
+    if (hasInput) {
+      util.builder.selectMenu.bindEvent(menu_ul);
+    }
+
     newMenu.appendTo('body');
 
     $('body').on('click', function(){
@@ -286,9 +369,39 @@ util.builder.selectMenu = function(x, y, entries, hasInput, cb) {
 
 };
 
+/** @param tar ul.pure-menu-list
+ */
+util.builder.selectMenu.bindEvent = function(tar) {
+  var $tar_link = $(tar).find('.pure-menu-link');
+
+  // Bind hover
+  $tar_link.on('mouseover', function(){
+    $tar_link.removeClass('active');
+    $(this).addClass('active');
+  });
+
+  // "Enter" = click
+  $(tar).parent().find('input').keydown(function(e){
+    var $current_sel = $(tar).find('.active');
+    if (e.keyCode == 13 && $current_sel.length == 1) {
+      $current_sel.click();
+    }
+    else if (e.keyCode == 27) {
+      $(tar).parent().remove();
+    }
+  });
+
+  // Prevent for triggering submit with "enter"
+  $(tar).parent().find('form').keypress(function(e){
+    return e.keyCode != 13;;
+  });
+};
+
+//
+// selectMemberMenu
+//
 util.builder.selectMemberMenu = function(x, y, cb) {
-  var filtered_members = util.members,
-      selecMenu_this = this;
+  var filtered_members = util.members;
 
   var selectMenu_gen = function() {
     var menu_ul = newMenu.find('.pure-menu-list');
@@ -304,6 +417,7 @@ util.builder.selectMemberMenu = function(x, y, cb) {
             }
           })));
     });
+    util.builder.selectMenu.bindEvent(menu_ul);
   };
 
   var newMenu = util.builder.selectMenu(x, y, [], 1);
@@ -326,6 +440,75 @@ util.builder.selectMemberMenu = function(x, y, cb) {
   selectMenu_gen();
 
   newMenu.appendTo('body');
+  newMenu.find('input').focus();
+
+  $('body').on('click', function(){
+    $(newMenu).remove();
+    $('body').off('click');
+  });
+
+  return newMenu;
+};
+
+//
+// selectTagsMenu
+//
+util.builder.selectTagsMenu = function(x, y, cb, ttags) {
+  var filtered_tags = util.tags;
+  var selectMenu_gen = function() {
+    var menu_ul = newMenu.find('.pure-menu-list');
+    menu_ul.html('');
+    filtered_tags.forEach(function(tag){
+
+      var mark_html = $('<span>', {
+        class: 'ws-selectMenu-selected',
+        text: '✓'
+      });
+
+      menu_ul.append(
+        $('<li>', {
+          class: 'pure-menu-item'
+        }).append(
+          $('<a>', {
+            class: 'pure-menu-link',
+            text: tag.name,
+            click: function(e){
+              e.stopPropagation();
+              cb(tag, this, mark_html);
+            }
+          }).append( util.tags_key[tag.name].ttag_mark == true ? mark_html : "" )
+          // }).append( mark_html )
+        )
+      );
+    });
+    util.builder.selectMenu.bindEvent(menu_ul);
+  };
+
+  var newMenu = util.builder.selectMenu(x, y, [], 1);
+
+  newMenu.find('input').on('input', function(e){
+    var input_text = $(this).val();
+
+    if (input_text == "") {
+      filtered_tags = util.tags;
+    } else {
+      filtered_tags = util.tags.filter(function(tag){
+        return (tag.name.toLowerCase() + tag.name_pinyin.toLowerCase()).indexOf(input_text) != -1;
+      }).sort(function(a, b){
+        return Math.max(a.name.indexOf(input_text), a.name_pinyin.indexOf(input_text)) -
+               Math.max(b.name.indexOf(input_text), b.name_pinyin.indexOf(input_text));
+      });
+    }
+
+    selectMenu_gen();
+  }).click(function(e){
+    e.stopPropagation();
+  })
+
+  selectMenu_gen();
+
+  newMenu.appendTo('body');
+  newMenu.find('input').focus();
 
   $('body').on('click', function(){
     $(newMenu).remove();
@@ -694,14 +877,65 @@ newHTML.find('.ws-task-priority')
 
 
 // Task tags
-var newHTML_tags = newHTML.find('.ws-task-tags')
-  .append($('<label>', { text: '标签: '}));
+var newHTML_tags = newHTML.find('.ws-task-tags');
 
-if (taskData.data.tags.length > 0) {
-  taskData.data.tags.forEach(function(t,l){
-    newHTML_tags.append( $('<span>', { text: (l == 0 ? '' : ', ') + t.name }));
-  });
-}
+util.datahandle.tags = setInterval(function(){
+  console.log('util.datahandle.tags!');
+  if (taskData.data.tags.length > 0 && util.datamark.tags == true) {
+    clearInterval(util.datahandle.tags);
+
+    // Task tags datalize
+    taskData.data.tags.forEach(function(t,l){
+      util.tags.forEach(function(tag){
+        if (t.name == tag.name) {
+          util.tags_key[tag.name].ttag_mark = true;
+        }
+      });
+    });
+
+    util.builder.tags(newHTML_tags.find('ul'));
+
+    newHTML_tags.append( $('<a>', {
+      class: 'ws-task-meta-edit',
+      href: 'javascript:;',
+      text: '编辑标签',
+      click: function(e){
+        e.stopPropagation();
+        var selectMenu = util.builder.selectTagsMenu(e.clientX, e.clientY, function(stag, menu_a, sel_html){
+            if (util.tags_key[stag.name].ttag_mark == true) {
+              // console.log('DELETE: ' + util.url.tags_modify(taskData.data._id, util.tags_key[stag.name]._id));
+              GM_xmlhttpRequest({
+                method: 'DELETE',
+                url: util.url.tags_modify(taskData.data._id, util.tags_key[stag.name]._id),
+                onload: function(res){
+                  var r = JSON.parse(res.responseText);
+                  if (r.code == 200) {
+                    $(menu_a).find('.ws-selectMenu-selected').remove();
+                    util.tags_key[stag.name].ttag_mark = false;
+                    util.builder.tags(newHTML_tags.find('ul'));
+                  }
+                }
+              });
+            } else {
+              // console.log('PUT: ' + util.url.tags_modify(taskData.data._id, util.tags_key[stag.name]._id));
+              GM_xmlhttpRequest({
+                method: 'POST',
+                url: util.url.tags_modify(taskData.data._id, util.tags_key[stag.name]._id),
+                onload: function(res){
+                  var r = JSON.parse(res.responseText);
+                  if (r.code == 200) {
+                    util.tags_key[stag.name].ttag_mark = true;
+                    $(menu_a).append(sel_html);
+                    util.builder.tags(newHTML_tags.find('ul'));
+                  }
+                }
+              });
+            }
+          }, taskData.data.tags);
+      }
+    }) );
+  }
+}, 100);
 
       /* endinject */
 

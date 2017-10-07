@@ -196,11 +196,62 @@ newHTML.find('.ws-task-priority')
 
 
 // Task tags
-var newHTML_tags = newHTML.find('.ws-task-tags')
-  .append($('<label>', { text: '标签: '}));
+var newHTML_tags = newHTML.find('.ws-task-tags');
 
-if (taskData.data.tags.length > 0) {
-  taskData.data.tags.forEach(function(t,l){
-    newHTML_tags.append( $('<span>', { text: (l == 0 ? '' : ', ') + t.name }));
-  });
-}
+util.datahandle.tags = setInterval(function(){
+  console.log('util.datahandle.tags!');
+  if (taskData.data.tags.length > 0 && util.datamark.tags == true) {
+    clearInterval(util.datahandle.tags);
+
+    // Task tags datalize
+    taskData.data.tags.forEach(function(t,l){
+      util.tags.forEach(function(tag){
+        if (t.name == tag.name) {
+          util.tags_key[tag.name].ttag_mark = true;
+        }
+      });
+    });
+
+    util.builder.tags(newHTML_tags.find('ul'));
+
+    newHTML_tags.append( $('<a>', {
+      class: 'ws-task-meta-edit',
+      href: 'javascript:;',
+      text: '编辑标签',
+      click: function(e){
+        e.stopPropagation();
+        var selectMenu = util.builder.selectTagsMenu(e.clientX, e.clientY, function(stag, menu_a, sel_html){
+            if (util.tags_key[stag.name].ttag_mark == true) {
+              // console.log('DELETE: ' + util.url.tags_modify(taskData.data._id, util.tags_key[stag.name]._id));
+              GM_xmlhttpRequest({
+                method: 'DELETE',
+                url: util.url.tags_modify(taskData.data._id, util.tags_key[stag.name]._id),
+                onload: function(res){
+                  var r = JSON.parse(res.responseText);
+                  if (r.code == 200) {
+                    $(menu_a).find('.ws-selectMenu-selected').remove();
+                    util.tags_key[stag.name].ttag_mark = false;
+                    util.builder.tags(newHTML_tags.find('ul'));
+                  }
+                }
+              });
+            } else {
+              // console.log('PUT: ' + util.url.tags_modify(taskData.data._id, util.tags_key[stag.name]._id));
+              GM_xmlhttpRequest({
+                method: 'POST',
+                url: util.url.tags_modify(taskData.data._id, util.tags_key[stag.name]._id),
+                onload: function(res){
+                  var r = JSON.parse(res.responseText);
+                  if (r.code == 200) {
+                    util.tags_key[stag.name].ttag_mark = true;
+                    $(menu_a).append(sel_html);
+                    util.builder.tags(newHTML_tags.find('ul'));
+                  }
+                }
+              });
+            }
+          }, taskData.data.tags);
+      }
+    }) );
+  }
+}, 100);

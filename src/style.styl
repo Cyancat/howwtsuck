@@ -84,6 +84,19 @@ code
 .ws-comments-container
   padding: 20px
 
+.ws-task-tags
+  ul
+    display: inline
+    margin: 0
+    padding: 0
+    li
+      display: inline
+      list-style: none
+      &:after
+        content: ", "
+      &:last-child
+        &:after
+          content: ""
 .ws-task-status
   padding: 5px 10px
   float: left
@@ -111,6 +124,10 @@ code
   margin-right: 20px
   label
     font-weight: bold
+
+.ws-task-meta-edit
+  font-size: 10px
+  margin-left: 10px
 
 .ws-title-meta
   font-size: 14px
@@ -156,11 +173,21 @@ code
   border: 1px solid #ccc
   width: 200px
   background: #fff
+  ul.pure-menu-list
+    max-height: 200px
+    overflow: scroll
   input[type='text']
     width: 100%
     border-radius: 0 !important
   a.pure-menu-link
     cursor: pointer
+    .ws-selectMenu-selected
+      float: right
+      margin-right: 5px
+    &.active
+      background-color: #eee !important
+    &:hover
+      background-color: transparent
 
 
 
