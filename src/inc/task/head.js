@@ -15,19 +15,63 @@ newHTML.find('.ws-title-container h1').append($("<span>", {
 
 
 // Task status
-var task_status = newHTML.find('.ws-task-stage');
+var task_status = newHTML.find('.ws-task-status-show'),
+    task_status_edit_comp = newHTML.find('.ws-task-status-edit-complete');
 if (taskData.data.is_deleted == 1) {
   task_status.text('已删除').addClass('ws-task-status-deleted');
 } else if (taskData.data.is_archived == 1) {
   task_status.text('已归档').addClass('ws-task-status-archived');
-} else if (taskData.data.completion.is_completed == 1) {
-  task_status.text('已完成').addClass('ws-task-status-fin');
-} else if (taskData.data.completion.is_completed == 0) {
-  task_status.text('进行中').addClass('ws-task-status-progress');
+} else if (taskData.data.is_archived == 0) {
+  if (taskData.data.completion.is_completed == 1) {
+    task_status.text('已完成').addClass('ws-task-status-fin');
+    task_status_edit_comp.text('任务重开');
+    task_status_edit_comp.click(function(){
+      GM_xmlhttpRequest({
+        method: 'PUT',
+        url: util.url.task_uncomplete(taskData.data._id),
+        onload: function(res){
+          var r = JSON.parse(res.responseText);
+          if (r.code == 200) {
+            location.reload();
+          }
+        }
+      });
+    });
+  } else if (taskData.data.completion.is_completed == 0) {
+    task_status.text('进行中').addClass('ws-task-status-progress');
+    task_status_edit_comp.text('完成任务');
+    task_status_edit_comp.click(function(){
+      GM_xmlhttpRequest({
+        method: 'PUT',
+        url: util.url.task_complete(taskData.data._id),
+        onload: function(res){
+          var r = JSON.parse(res.responseText);
+          if (r.code == 200) {
+            location.reload();
+          }
+        }
+      });
+    });
+  }
 }
 
 task_status.click(function(){
-
+  var status_this = this;
+  var selectMenu = util.builder.selectMenu(e.clientX, e.clientY, ['高', '中', '低', '不设定'], 0, function(en){
+    GM_xmlhttpRequest({
+      method: 'PUT',
+      url: util.url.task_api(taskData.data._id),
+      headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+      data: JSON.stringify({priority: util.builder.priorityFormat(en)}),
+      onload: function(res){
+        var r = JSON.parse(res.responseText);
+        if (r.code == 200) {
+          $(status_this).text(util.builder.priorityFormat(r.data.priority));
+        }
+      }
+    });
+  });
+  e.stopPropagation();
 });
 
 
@@ -200,17 +244,19 @@ var newHTML_tags = newHTML.find('.ws-task-tags');
 
 util.datahandle.tags = setInterval(function(){
   console.log('util.datahandle.tags!');
-  if (taskData.data.tags.length > 0 && util.datamark.tags == true) {
+  if (util.datamark.tags == true) {
     clearInterval(util.datahandle.tags);
 
     // Task tags datalize
-    taskData.data.tags.forEach(function(t,l){
-      util.tags.forEach(function(tag){
-        if (t.name == tag.name) {
-          util.tags_key[tag.name].ttag_mark = true;
-        }
+    if (taskData.data.tags.length > 0) {
+      taskData.data.tags.forEach(function(t,l){
+        util.tags.forEach(function(tag){
+          if (t.name == tag.name) {
+            util.tags_key[tag.name].ttag_mark = true;
+          }
+        });
       });
-    });
+    }
 
     util.builder.tags(newHTML_tags.find('ul'));
 

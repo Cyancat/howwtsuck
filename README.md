@@ -10,6 +10,6 @@
   * Add task num at title area of every task panel
   * Add individual link to inline images in task description
 
-## TODO
+## TODO recently
 
-A lot, couldn't be count :laughing:
+  Collecting

@@ -9,7 +9,8 @@ var util = {
 util.cleanHTML = function() {
   unsafeWindow.document.documentElement.innerHTML = '';
   util.globalNotice('Loading data...');
-  ctCSS();
+  GM_addStyle(ctCSS());
+  GM_addStyle(GM_getResourceText("DatePickerCSS"));
 };
 
 util.globalNotice = function(t) {
@@ -109,6 +110,27 @@ util.url.tags_modify = function(task_id, tag_id) {
   return CONST.URL_API_TASKCODE + task_id + '/tags/' + tag_id + '?t=' + util.getUnixtime();
 };
 
+util.url.task_remove = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/remove?t=' + util.getUnixtime();
+};
+
+util.url.task_archieve = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/archive?t=' + util.getUnixtime();
+};
+
+util.url.task_unarchieve = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/unarchive?t=' + util.getUnixtime();
+};
+
+util.url.task_complete = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/complete?t=' + util.getUnixtime();
+};
+
+util.url.task_uncomplete = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/uncomplete?t=' + util.getUnixtime();
+};
+
+
 
 
 
@@ -164,6 +186,7 @@ GM_xmlhttpRequest({
   synchronous: true
 });
 
+// This mark used for make sure the request for tags is finished when deal with tags data.
 util.datamark.tags = false;
 GM_xmlhttpRequest({
   method: 'GET',

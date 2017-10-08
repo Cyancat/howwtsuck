@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.8
+// @version      0.9
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -13,18 +13,21 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/jquery.datetimepicker.min.js
+// @resource     DatePickerCSS https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/jquery.datetimepicker.min.css
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
+// @grant        GM_getResourceText
 // ==/UserScript==
 
 (function() {
   'use strict';
 
   function ctCSS() {
-    GM_addStyle(' \
+    return ' \
     /* include:css */
     /* endinject */
-    ');
+    ';
   }
 
   function ctHTML() {

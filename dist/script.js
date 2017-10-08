@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HowWTSucks
 // @namespace    https://reimu.worktile.com/
-// @version      0.8
+// @version      0.9
 // @description  HOOOOOOW WT sucks!
 // @author       Cyancat
 // @match        https://help.worktile.com/taskno/*
@@ -13,17 +13,20 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/commonmark/0.27.0/commonmark.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/jquery.datetimepicker.min.js
+// @resource     DatePickerCSS https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/jquery.datetimepicker.min.css
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
+// @grant        GM_getResourceText
 // ==/UserScript==
 
 (function() {
   'use strict';
 
   function ctCSS() {
-    GM_addStyle(' \
-    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-content-container-editor{margin-bottom:50px}.ws-content-container-editor textarea{margin-bottom:10px;height:300px}.ws-attachments{display:flex}.ws-attachments label{color:#999}.ws-attachments .ws-attachments-container{margin-left:10px}.ws-attachments .ws-attachments-container ul{margin:0;padding:0;list-style:none}.ws-attachments .ws-attachments-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-tags ul{display:inline;margin:0;padding:0}.ws-task-tags ul li{display:inline;list-style:none}.ws-task-tags ul li:after{content:", "}.ws-task-tags ul li:last-child:after{content:""}.ws-task-status{padding:5px 10px;float:left;text-decoration:none}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-task-meta-edit{font-size:10px;margin-left:10px}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-selectMenu{position:absolute;left:0;top:0;border:1px solid #ccc;width:200px;background:#fff}.ws-selectMenu ul.pure-menu-list{max-height:200px;overflow:scroll}.ws-selectMenu input[type=text]{width:100%;border-radius:0!important}.ws-selectMenu a.pure-menu-link{cursor:pointer}.ws-selectMenu a.pure-menu-link .ws-selectMenu-selected{float:right;margin-right:5px}.ws-selectMenu a.pure-menu-link.active{background-color:#eee!important}.ws-selectMenu a.pure-menu-link:hover{background-color:transparent}.ws-content-user{color:#91d6d5;margin-right:10px}.ws-content-tasklink{color:#f9a5a1;margin-right:10px}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
-    ');
+    return ' \
+    *{color:#333;box-sizing:border-box}img{max-width:100%}blockquote{background-color:#f1f1f1;margin-left:0;padding:1px 10px}.secondary-text{color:#999;font-size:12px}code{color:#c7254e;background:rgba(0,0,0,.04);font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;padding:0 .2em}.fit_to_origin{width:auto}.fit_to_width{width:auto;max-width:100%}.fit_to_height{width:auto;height:auto;max-width:100%;max-height:100%;position:fixed}.ws-content-container-editor{margin-bottom:50px}.ws-content-container-editor textarea{margin-bottom:10px;height:300px}.ws-attachments{display:flex}.ws-attachments label{color:#999}.ws-attachments .ws-attachments-container{margin-left:10px}.ws-attachments .ws-attachments-container ul{margin:0;padding:0;list-style:none}.ws-attachments .ws-attachments-container ul a.active{background-color:#eee}.container{margin-left:20px}.ws-task-status-container{padding:0 20px}.ws-title-container{padding:0 20px 20px}.ws-comments-container,.ws-issue-container{padding:20px}.ws-task-tags ul{display:inline;margin:0;padding:0}.ws-task-tags ul li{display:inline;list-style:none}.ws-task-tags ul li:after{content:", "}.ws-task-tags ul li:last-child:after{content:""}.ws-task-status{padding:5px 10px;float:left}.ws-task-status.ws-task-status-progress{background-color:#ffd889}.ws-task-status.ws-task-status-fin{background-color:#c3eeee}.ws-task-status.ws-task-status-archived{background-color:#ffe9e9}.ws-task-status.ws-task-status-deleted{background-color:#db9797;color:#fff}.ws-task-status.ws-task-parent{float:right;background-color:#e6e9eb}.ws-task-project{float:left;padding:5px 10px;background-color:#b3c4c3}.ws-task-meta{float:left;margin-right:20px}.ws-task-meta label{font-weight:700}.ws-task-meta-edit{font-size:10px;margin-left:10px}.ws-task-status-edit{float:left;padding:5px 10px}.ws-title-meta{font-size:14px;margin-left:10px}.ws-comments-container{border-left:1px solid #ccc;padding-bottom:160px}.ws-comment{margin-bottom:30px}.ws-comment-time{margin-left:5px}.ws-comment-content{margin-top:5px}.ws-comment-content>p{margin:5px 0}.ws-comment-reply{position:fixed;bottom:0;padding-right:50px;background:#fff}.ws-comment-reply textarea{width:100%;min-height:100px}.wt-comment-at-container{margin:.35em 0 0;position:absolute;border:1px solid #ccc;width:50%;background-color:#fff}.wt-comment-at-container a.active{background-color:#eee}.ws-selectMenu{position:absolute;left:0;top:0;border:1px solid #ccc;width:200px;background:#fff}.ws-selectMenu ul.pure-menu-list{max-height:200px;overflow:scroll}.ws-selectMenu input[type=text]{width:100%;border-radius:0!important}.ws-selectMenu a.pure-menu-link{cursor:pointer}.ws-selectMenu a.pure-menu-link .ws-selectMenu-selected{float:right;margin-right:5px}.ws-selectMenu a.pure-menu-link.active{background-color:#eee!important}.ws-selectMenu a.pure-menu-link:hover{background-color:transparent}.ws-content-user{color:#91d6d5;margin-right:10px}.ws-content-tasklink{color:#f9a5a1;margin-right:10px}.ws-content-tasklink:hover{color:#a23607}.ws-subtask-container{margin-top:50px} \
+    ';
   }
 
   function ctHTML() {
@@ -31,15 +34,19 @@
     <div class="pure-g container"> \
   <div class="ws-task-status-container pure-u-1"> \
     <span class="ws-task-status ws-task-parent hidden"></span> \
-    <a href="javascript:;" class="ws-task-stage ws-task-status"></a> \
+    <span class="ws-task-status-show ws-task-status"></span> \
     <span class="ws-task-project"></span> \
     <span class="ws-task-visibility ws-task-status"></span> \
+    <a class="ws-task-status ws-task-status-edit-complete" href="javascript:;">任务完成</a> \
+    <a class="ws-task-status ws-task-status-edit-others" href="javascript:;">其他处理...</a> \
   </div> \
   <div class="ws-title-container pure-u-1"> \
     <h1><span class="ws-title-meta"></span></h1> \
     <span class="ws-task-meta ws-task-assign"></span> \
     <span class="ws-task-meta ws-task-begin-date"></span> \
+    <input type="text" class="ws-task-begin-data-picker"> \
     <span class="ws-task-meta ws-task-due-date"></span> \
+    <input type="text" class="ws-task-due-data-picker"> \
     <span class="ws-task-meta ws-task-priority"></span> \
     <span class="ws-task-meta ws-task-tags"> \
       <label>标签: </label> \
@@ -117,7 +124,8 @@ var RCONST = {
 util.cleanHTML = function() {
   unsafeWindow.document.documentElement.innerHTML = '';
   util.globalNotice('Loading data...');
-  ctCSS();
+  GM_addStyle(ctCSS());
+  GM_addStyle(GM_getResourceText("DatePickerCSS"));
 };
 
 util.globalNotice = function(t) {
@@ -217,6 +225,27 @@ util.url.tags_modify = function(task_id, tag_id) {
   return CONST.URL_API_TASKCODE + task_id + '/tags/' + tag_id + '?t=' + util.getUnixtime();
 };
 
+util.url.task_remove = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/remove?t=' + util.getUnixtime();
+};
+
+util.url.task_archieve = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/archive?t=' + util.getUnixtime();
+};
+
+util.url.task_unarchieve = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/unarchive?t=' + util.getUnixtime();
+};
+
+util.url.task_complete = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/complete?t=' + util.getUnixtime();
+};
+
+util.url.task_uncomplete = function(task_id) {
+  return CONST.URL_API_TASKCODE + task_id + '/uncomplete?t=' + util.getUnixtime();
+};
+
+
 
 
 
@@ -272,6 +301,7 @@ GM_xmlhttpRequest({
   synchronous: true
 });
 
+// This mark used for make sure the request for tags is finished when deal with tags data.
 util.datamark.tags = false;
 GM_xmlhttpRequest({
   method: 'GET',
@@ -636,6 +666,12 @@ $("head").append(
   + 'rel="stylesheet" type="text/css">'
 );
 
+// Init datapicker
+jQuery('.ws-task-begin-data-picker, .ws-task-end-data-picker').datetimepicker({
+  format:'m.d H:i',
+  lang:'cn'
+});
+
 
 // Get task identifier
 var task_no = /.*\/taskno\/(\d*)/g.exec(window.location.href),
@@ -702,19 +738,63 @@ newHTML.find('.ws-title-container h1').append($("<span>", {
 
 
 // Task status
-var task_status = newHTML.find('.ws-task-stage');
+var task_status = newHTML.find('.ws-task-status-show'),
+    task_status_edit_comp = newHTML.find('.ws-task-status-edit-complete');
 if (taskData.data.is_deleted == 1) {
   task_status.text('已删除').addClass('ws-task-status-deleted');
 } else if (taskData.data.is_archived == 1) {
   task_status.text('已归档').addClass('ws-task-status-archived');
-} else if (taskData.data.completion.is_completed == 1) {
-  task_status.text('已完成').addClass('ws-task-status-fin');
-} else if (taskData.data.completion.is_completed == 0) {
-  task_status.text('进行中').addClass('ws-task-status-progress');
+} else if (taskData.data.is_archived == 0) {
+  if (taskData.data.completion.is_completed == 1) {
+    task_status.text('已完成').addClass('ws-task-status-fin');
+    task_status_edit_comp.text('任务重开');
+    task_status_edit_comp.click(function(){
+      GM_xmlhttpRequest({
+        method: 'PUT',
+        url: util.url.task_uncomplete(taskData.data._id),
+        onload: function(res){
+          var r = JSON.parse(res.responseText);
+          if (r.code == 200) {
+            location.reload();
+          }
+        }
+      });
+    });
+  } else if (taskData.data.completion.is_completed == 0) {
+    task_status.text('进行中').addClass('ws-task-status-progress');
+    task_status_edit_comp.text('完成任务');
+    task_status_edit_comp.click(function(){
+      GM_xmlhttpRequest({
+        method: 'PUT',
+        url: util.url.task_complete(taskData.data._id),
+        onload: function(res){
+          var r = JSON.parse(res.responseText);
+          if (r.code == 200) {
+            location.reload();
+          }
+        }
+      });
+    });
+  }
 }
 
 task_status.click(function(){
-
+  var status_this = this;
+  var selectMenu = util.builder.selectMenu(e.clientX, e.clientY, ['高', '中', '低', '不设定'], 0, function(en){
+    GM_xmlhttpRequest({
+      method: 'PUT',
+      url: util.url.task_api(taskData.data._id),
+      headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+      data: JSON.stringify({priority: util.builder.priorityFormat(en)}),
+      onload: function(res){
+        var r = JSON.parse(res.responseText);
+        if (r.code == 200) {
+          $(status_this).text(util.builder.priorityFormat(r.data.priority));
+        }
+      }
+    });
+  });
+  e.stopPropagation();
 });
 
 
@@ -887,17 +967,19 @@ var newHTML_tags = newHTML.find('.ws-task-tags');
 
 util.datahandle.tags = setInterval(function(){
   console.log('util.datahandle.tags!');
-  if (taskData.data.tags.length > 0 && util.datamark.tags == true) {
+  if (util.datamark.tags == true) {
     clearInterval(util.datahandle.tags);
 
     // Task tags datalize
-    taskData.data.tags.forEach(function(t,l){
-      util.tags.forEach(function(tag){
-        if (t.name == tag.name) {
-          util.tags_key[tag.name].ttag_mark = true;
-        }
+    if (taskData.data.tags.length > 0) {
+      taskData.data.tags.forEach(function(t,l){
+        util.tags.forEach(function(tag){
+          if (t.name == tag.name) {
+            util.tags_key[tag.name].ttag_mark = true;
+          }
+        });
       });
-    });
+    }
 
     util.builder.tags(newHTML_tags.find('ul'));
 

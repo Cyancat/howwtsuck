@@ -5,6 +5,12 @@ $("head").append(
   + 'rel="stylesheet" type="text/css">'
 );
 
+// Init datapicker
+jQuery('.ws-task-begin-data-picker, .ws-task-end-data-picker').datetimepicker({
+  format:'m.d H:i',
+  lang:'cn'
+});
+
 
 // Get task identifier
 var task_no = /.*\/taskno\/(\d*)/g.exec(window.location.href),
